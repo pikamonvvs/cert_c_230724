@@ -17,8 +17,19 @@
 //   : (void)0
 //   -> 컴파일 될 때, 아무것도 생성되지 않습니다.
 
+int foo(void)
+{
+    return 0;
+}
+
 int main(void)
 {
+    // foo();
+    // 함수의 결과를 무시하면 안됩니다.
+
+    (void)foo();
+    // => 함수의 결과를 무시한다.
+
     TRACE("hello\n");
 
     int n = 42;
