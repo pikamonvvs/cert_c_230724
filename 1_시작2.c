@@ -52,17 +52,35 @@ int f2(void)
     return 1;
 }
 
+/*
 int main(void)
 {
     // 미지정 동작
     // > 이항 연산자에서 함수의 호출이 앞에서부터 수행되는지,
     //   뒤에서부터 수행되는지 미지정 동작입니다.
-    // int result = f1() + f2();
-    int r1 = f1();
-    int r2 = f2();
-    int result = r1 + r2;
+    int result = f1() + f2();
+
+    // int r1 = f1();
+    // int r2 = f2();
+    // int result = r1 + r2;
 
     printf("%d\n", result);
+
+    printf("g: %d\n", g);
+
+    return 0;
+}
+*/
+
+int foo(int a, int b)
+{
+    return a + b;
+}
+
+int main(void)
+{
+    int result = foo(f1(), f2());
+    printf("result: %d\n", result);
 
     printf("g: %d\n", g);
 
