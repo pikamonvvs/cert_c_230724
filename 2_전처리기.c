@@ -17,7 +17,7 @@ int square(int x) { return x * x; }
 //    매크로 함수를 사용할 수 있습니다.
 //  > 매크로 함수는 대문자로 이름을 사용하는 것이 일반적입니다.
 
-// 3. 매크로 치환 영역을 괄호로 감싸주어서,
+// 3. 매크로 파라미터 치환 영역을 괄호로 감싸주어서,
 //    우선순위 문제가 발생하는 것을 해결해야 합니다.
 // #define SQUARE(x) x * x
 #if 0
@@ -64,6 +64,7 @@ int main(void)
 
     int result1 = DBL(x + x) * DBL(x + x);
     // int result1 = (x + x) + (x + x) * (x + x) + (x + x);
+    // int result1 = ((x + x) + (x + x)) * ((x + x) + (x + x));
 
     printf("result1: %d\n", result1);
 
@@ -75,6 +76,10 @@ int main(void)
 #endif
 
 // 5. 매크로 상수를 사용할 때도, 괄호로 감싸주는 것이 좋습니다.
+// #define INFO -1
+// #define WARN -2
+// #define ERROR -3
+
 // 해결 방법 1.
 // #define INFO (-1)
 // #define WARN (-2)
