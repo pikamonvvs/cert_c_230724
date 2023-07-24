@@ -21,7 +21,7 @@ int main(void)
     int result;
     int x = 10;
 
-    result = F(x) + G(x);
+    result = F(x) + G(x); /* 미정의 동작 */
     // result = (++operations, ++calls_to_f, 2 * (x)) + (++operations, ++calls_to_g, (x) + 1);
 
     printf("result: %d\n", result);
