@@ -81,11 +81,17 @@ int main(void)
 // #define ERROR (-3)
 
 // 해결 방법 2. enum 상수
+// - 텍스트 치환(전처리기)으로 인한 오류를 방지할 수 있습니다.
+// - 전처리 이후에도 심볼 정보는 유지됩니다.
 enum {
     INFO = -1,
     WARN = -2,
     ERROR = -3,
 };
+// 한계점
+// 1) 정수 타입에 대해서만 사용할 수 있습니다.
+// 2) 런타임 상수 입니다.
+//    상수 표현식에서는 사용이 불가능합니다.
 
 void log_print(int level, const char* message)
 {
