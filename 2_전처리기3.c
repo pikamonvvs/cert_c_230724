@@ -52,6 +52,8 @@ int main(void)
 // 2) 인라인 최적화는 컴파일 최적화 명령입니다.
 //    사용자가 inline의 키워드를 지정하여도, 무조건 인라인 치환이 수행되지 않습니다.
 //     MSVC: /Ob1
+// 핵심: 인라인 함수와 매크로 함수의 의도가 동일하다면,
+//      인라인 함수가 선호되어야 합니다.
 
 #define SQUARE(x) ((x) * (x))
 static inline int square(int x) { return x * x; }
