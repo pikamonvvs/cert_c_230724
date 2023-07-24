@@ -27,6 +27,8 @@ int foo
 // => C의 표준 함수가 매크로 함수일 가능성이 있습니다.
 //   ex) memcpy, printf, assert ...
 
+#include <string.h>
+
 int main(void)
 {
 // 미정의 동작
@@ -39,11 +41,10 @@ int main(void)
 #endif
 
     // 해결 방법
-    int result =
 #if (MORE_ARGS == 1)
-        CALL_FOO(10, 20, 30, 40);
+    int result = CALL_FOO(10, 20, 30, 40);
 #else
-        CALL_FOO(10, 20, 40);
+    int result = CALL_FOO(10, 20, 40);
 #endif
 
     printf("result: %d\n", result);
