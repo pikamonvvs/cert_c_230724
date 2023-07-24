@@ -47,6 +47,7 @@ int main(void)
 }
 #endif
 
+#if 0
 int dbl(int x)
 {
     return x + x;
@@ -69,5 +70,29 @@ int main(void)
     int result2 = dbl(x + x) * dbl(x + x);
     printf("result2: %d\n", result2);
 
+    return 0;
+}
+#endif
+
+// 5. 매크로 상수를 사용할 때도, 괄호로 감싸주는 것이 좋습니다.
+#define INFO (-1)
+#define WARN (-2)
+#define ERROR (-3)
+
+void log_print(int level, const char* message)
+{
+    // if (level INFO) {
+    if (level == INFO) {
+        printf("[INFO] %s\n", message);
+    } else if (level == WARN) {
+        printf("[WARN] %s\n", message);
+    } else if (level == ERROR) {
+        printf("[ERROR] %s\n", message);
+    }
+}
+
+int main(void)
+{
+    log_print(ERROR, "Error!");
     return 0;
 }
