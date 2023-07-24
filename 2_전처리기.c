@@ -20,6 +20,7 @@ int square(int x) { return x * x; }
 // 3. 매크로 치환 영역을 괄호로 감싸주어서,
 //    우선순위 문제가 발생하는 것을 해결해야 합니다.
 // #define SQUARE(x) x * x
+#if 0
 #define SQUARE(x) (x) * (x)
 
 int main(void)
@@ -41,6 +42,32 @@ int main(void)
     // int result4 = x + x * x + x;
     // int result4 = (x + x) * (x + x);
     printf("%d\n", result4);
+
+    return 0;
+}
+#endif
+
+int dbl(int x)
+{
+    return x + x;
+}
+
+// #define DBL(x) (x) + (x)
+
+// 4. 매크로 전체 치환영역을 괄호로 감싸주어야 합니다.
+#define DBL(x) ((x) + (x))
+
+int main(void)
+{
+    int x = 10;
+
+    int result1 = DBL(x + x) * DBL(x + x);
+    // int result1 = (x + x) + (x + x) * (x + x) + (x + x);
+
+    printf("result1: %d\n", result1);
+
+    int result2 = dbl(x + x) * dbl(x + x);
+    printf("result2: %d\n", result2);
 
     return 0;
 }
