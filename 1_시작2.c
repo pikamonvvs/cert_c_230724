@@ -79,10 +79,25 @@ int foo(int a, int b)
 
 int main(void)
 {
-    int result = foo(f1(), f2());
+    // 인자를 전달하는 순서는 미지정 동작입니다.
+    // int result = foo(f1(), f2());
+
+    int r1 = f1();
+    int r2 = f2();
+    int result = foo(r1, r2);
+
     printf("result: %d\n", result);
 
     printf("g: %d\n", g);
+
+    int n; // 초기값 - 미지정 동작
+    switch (n) {
+    case 0:
+        break;
+
+    default:
+        break;
+    }
 
     return 0;
 }
