@@ -47,6 +47,16 @@ int main(void)
 //   의도하지 않은 결과가 발생할 수 있습니다.
 // - 매크로 함수에서 생성되는 식별자가 충돌 가능성이 낮은 이름을 사용해야 합니다.
 
+#if 0
+#define SWAP(a, b)     \
+    do {               \
+        int __tmp = a; \
+        a = b;         \
+        b = __tmp;     \
+    } while (0)
+#endif
+
+#if 0
 #define CONCAT_IMPL(a, b) a##b
 #define CONCAT(a, b) CONCAT_IMPL(a, b)
 
@@ -68,6 +78,48 @@ int main(void)
     // do { int __tmp67 = a; a = tmp; tmp = __tmp67; } while (0);
 
     printf("%d %d\n", a, tmp);
+
+    return 0;
+}
+#endif
+
+// 해결 방법 1.
+//  => 타입 인자를 추가적으로 전달 받습니다.
+#if 0
+#define SWAP(a, b)     \
+    do {               \
+        int __tmp = a; \
+        a = b;         \
+        b = __tmp;     \
+    } while (0)
+#endif
+
+#if 0
+#define SWAP(type, a, b) \
+    do {                 \
+        type __tmp = a;  \
+        a = b;           \
+        b = __tmp;       \
+    } while (0)
+#endif
+
+// 해결 방법 2. GNU Extension
+//  => __typeof
+#define SWAP(a, b)             \
+    do {                       \
+        __typeof(a) __tmp = a; \
+        a = b;                 \
+        b = __tmp;             \
+    } while (0)
+
+int main(void)
+{
+    double a = 10.5;
+    double b = 20.4;
+
+    SWAP(a, b);
+
+    printf("%lf %lf\n", a, b);
 
     return 0;
 }
