@@ -105,6 +105,8 @@ int main(void)
 
 // 해결 방법 2. GNU Extension
 //  => __typeof
+//    C++11: decltype 문법과 동일합니다.
+
 //  => 매크로 함수를 만들 때, do-while(0) 이외의 방법도 제공합니다.
 //     ({...})
 //      - MSVC는 지원하지 않습니다.
