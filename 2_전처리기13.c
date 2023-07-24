@@ -54,9 +54,9 @@ int main(void)
 
 #define SWAP(a, b)                            \
     do {                                      \
-        int UNIQUE_NAME(__tmp, __func__) = a; \
+        int UNIQUE_NAME(__tmp, __LINE__) = a; \
         a = b;                                \
-        b = UNIQUE_NAME(__tmp, __func__);     \
+        b = UNIQUE_NAME(__tmp, __LINE__);     \
     } while (0)
 
 int main(void)
@@ -65,7 +65,7 @@ int main(void)
     int tmp = 20;
 
     SWAP(a, tmp);
-    // do { int tmp = a; a = tmp; tmp = tmp; } while (0);
+    // do { int __tmp67 = a; a = tmp; tmp = __tmp67; } while (0);
 
     printf("%d %d\n", a, tmp);
 
