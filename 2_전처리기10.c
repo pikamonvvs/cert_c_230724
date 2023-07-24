@@ -34,6 +34,7 @@ int main(void)
 // > 미정의 동작의 가능성이 있습니다.
 //   하나의 이름(ABS)을 통해, 모든 타입에 대해서 사용할 수 있습니다.
 
+#if 0
 static inline int iabs(int x) { return x > 0 ? x : -x; }
 static inline double dabs(double x) { return x > 0 ? x : -x; }
 static inline long long llabs(long long x) { return x > 0 ? x : -x; }
@@ -57,6 +58,22 @@ int main(void)
     long long ll = -32423232323LL;
     printf("%lld\n", ABS(ll));
     printf("%lld\n", llabs(ll));
+
+    return 0;
+}
+#endif
+
+#define PrintValue(x) _Generic((x), int: printf("Int: %d\n", x), double: printf("Double: %lf\n", x), char*: printf("String: %s\n", x), default: printf("Unknown type\n"))
+
+int main(void)
+{
+    int a = 42;
+    double d = 3.14;
+    char* s = "Hello";
+
+    PrintValue(a);
+    PrintValue(d);
+    PrintValue(s);
 
     return 0;
 }
