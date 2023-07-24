@@ -16,7 +16,11 @@ int square(int x) { return x * x; }
 // 2. 함수 호출의 오버헤드를 제거하기 위해서,
 //    매크로 함수를 사용할 수 있습니다.
 //  > 매크로 함수는 대문자로 이름을 사용하는 것이 일반적입니다.
-#define SQUARE(x) x* x
+
+// 3. 매크로 치환 영역을 괄호로 감싸주어서,
+//    우선순위 문제가 발생하는 것을 해결해야 합니다.
+// #define SQUARE(x) x * x
+#define SQUARE(x) (x) * (x)
 
 int main(void)
 {
@@ -29,6 +33,14 @@ int main(void)
 
     int result2 = SQUARE(x);
     printf("%d\n", result2);
+
+    int result3 = square(x + x);
+    printf("%d\n", result3);
+
+    int result4 = SQUARE(x + x);
+    // int result4 = x + x * x + x;
+    // int result4 = (x + x) * (x + x);
+    printf("%d\n", result4);
 
     return 0;
 }
