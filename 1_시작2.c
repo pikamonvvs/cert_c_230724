@@ -21,6 +21,7 @@ int main(void)
     int n2 = 0;
 
     // int result = n1 / n2; /* 미정의 동작 */
+    // int result = n1 % n2; /* 미정의 동작 */
 
     int x = INT_MAX;
     printf("%d\n", x + 1); /* 미정의 동작 */
@@ -52,9 +53,11 @@ int f2(void)
     return 1;
 }
 
-/*
+#if 0
 int main(void)
 {
+    int n; // 쓰레기값 - 미지정 동작
+
     // 미지정 동작
     // > 이항 연산자에서 함수의 호출이 앞에서부터 수행되는지,
     //   뒤에서부터 수행되는지 미지정 동작입니다.
@@ -65,12 +68,11 @@ int main(void)
     // int result = r1 + r2;
 
     printf("%d\n", result);
-
     printf("g: %d\n", g);
 
     return 0;
 }
-*/
+#endif
 
 int foo(int a, int b)
 {
