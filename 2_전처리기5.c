@@ -62,7 +62,13 @@ int main(void)
     int result;
     int x = 10;
 
-    result = f(x) + g(x);
+    // 이항 연산자 안에서 함수의 호출을 사용하는 것은
+    // 순서가 미지정 동작입니다.
+    // result = f(x) + g(x);
+
+    int rf = f(x);
+    int rg = g(x);
+    result = rf + rg;
 
     printf("result: %d\n", result);
     printf("%d %d %d\n", operations, calls_to_f, calls_to_g);
