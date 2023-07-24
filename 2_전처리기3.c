@@ -57,6 +57,7 @@ int main(void)
 
 #define SQUARE(x) ((x) * (x))
 static inline int square(int x) { return x * x; }
+// 인라인 함수는 반드시 Internal linkage(내부 연결)을 갖도록 만들어져야 합니다.
 
 int main(void)
 {
