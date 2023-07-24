@@ -57,6 +57,8 @@ static inline int g(int x)
 int main(void)
 {
     // , - 나열 연산자
+    // => 왼쪽에서 오른쪽으로 순차적으로 수행되고,
+    //    가장 마지막 표현식이 결과가 됩니다.
     // printf("%d\n", (1, 2, 3)); // 3
 
     int result;
@@ -72,6 +74,7 @@ int main(void)
 
     printf("result: %d\n", result);
     printf("%d %d %d\n", operations, calls_to_f, calls_to_g);
+    // 함수 호출 인자의 전달 순서는 미지정 입니다.
 
     return 0;
 }
