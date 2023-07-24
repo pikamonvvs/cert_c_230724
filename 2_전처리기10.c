@@ -34,7 +34,7 @@ int main(void)
 // > 미정의 동작의 가능성이 있습니다.
 //   하나의 이름(ABS)을 통해, 모든 타입에 대해서 사용할 수 있습니다.
 
-#if 0
+#if 1
 static inline int iabs(int x) { return x > 0 ? x : -x; }
 static inline double dabs(double x) { return x > 0 ? x : -x; }
 static inline long long llabs(long long x) { return x > 0 ? x : -x; }
@@ -42,7 +42,6 @@ static inline long long llabs(long long x) { return x > 0 ? x : -x; }
 //   각 타입에 따라서 다른 이름의 함수를 사용해야 합니다.
 
 // 해결 방법. C11표준 - _Generic
-
 #define ABS(x) _Generic((x), int: iabs(x), double: dabs(x), long long: llabs(x))
 
 int main(void)
@@ -63,6 +62,7 @@ int main(void)
 }
 #endif
 
+#if 0
 #define PrintValue(x) _Generic((x), int: printf("Int: %d\n", x), double: printf("Double: %lf\n", x), char*: printf("String: %s\n", x), default: printf("Unknown type\n"))
 
 int main(void)
@@ -77,3 +77,4 @@ int main(void)
 
     return 0;
 }
+#endif
