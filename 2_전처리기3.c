@@ -26,6 +26,7 @@ int main(void)
 // 1. 매크로 함수의 매개 변수에 대한 증가와 감소를 매크로 함수 호출 이전에 수행해야 합니다.
 // 2. 매개 변수가 2번 이상 치환되는 형태의 매크로 함수를
 //    이름을 통해 안전하지 않음을 알리는 것이 좋습니다.
+#if 0
 #define UNSAFE_SQUARE(x) ((x) * (x))
 #define UNSAFE_ABS(x) ((x) > 0 ? (x) : -(x))
 
@@ -38,6 +39,42 @@ int main(void)
     int a = -10;
     --a;
     printf("%d\n", UNSAFE_ABS(a));
+
+    return 0;
+}
+#endif
+
+// 해결 방법 2.
+// => C99에서 새롭게 도입된 문법이 있습니다.
+//    "inline 함수"
+// 1) 인라인 함수는 함수를 호출하지 않고,
+//    함수의 본문으로 기계어 치환을 수행합니다.
+// 2) 인라인 최적화는 컴파일 최적화 명령입니다.
+//    사용자가 inline의 키워드를 지정하여도, 무조건 인라인 치환이 수행되지 않습니다.
+//     MSVC: /Ob1
+
+#define SQUARE(x) ((x) * (x))
+static inline int square(int x) { return x * x; }
+
+int main(void)
+{
+    int x = 10;
+    // printf("%d\n", square(++x));
+
+    int result = 0;
+    result = square(x);
+    /*
+        mov     eax, DWORD PTR x$[rsp]
+        imul    eax, DWORD PTR x$[rsp]
+        mov     DWORD PTR result$[rsp], eax
+    */
+
+    result = SQUARE(x);
+    /*
+        mov     eax, DWORD PTR x$[rsp]
+        imul    eax, DWORD PTR x$[rsp]
+        mov     DWORD PTR result$[rsp], eax
+    */
 
     return 0;
 }
