@@ -105,21 +105,25 @@ int main(void)
 
 // 해결 방법 2. GNU Extension
 //  => __typeof
+//  => 매크로 함수를 만들 때, do-while(0) 이외의 방법도 제공합니다.
+//     ({...})
+//      - MSVC는 지원하지 않습니다.
+
 #define SWAP(a, b)             \
-    do {                       \
+    ({                         \
         __typeof(a) __tmp = a; \
         a = b;                 \
         b = __tmp;             \
-    } while (0)
+    })
 
 int main(void)
 {
-    double a = 10.5;
-    double b = 20.4;
+    int a = 10;
+    int b = 20;
 
     SWAP(a, b);
 
-    printf("%lf %lf\n", a, b);
+    printf("%d %d\n", a, b);
 
     return 0;
 }
