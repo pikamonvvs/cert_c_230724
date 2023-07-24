@@ -45,7 +45,8 @@ struct color colors[] = {
 // 반드시 이중으로 처리해야 합니다.
 // => 매크로의 치환 이후에 작업이 수행되어야 하기 때문입니다.
 
-#define CONCAT(a, b) a##b
+#define CONCAT_IMPL(a, b) a##b
+#define CONCAT(a, b) CONCAT_IMPL(a, b)
 
 #define TO_STR_IMPL(str) #str
 #define TO_STR(str) TO_STR_IMPL(str)
@@ -54,6 +55,15 @@ struct color colors[] = {
 
 int main(void)
 {
+    int hello10 = 100;
+    printf("%d\n", CONCAT(hello, 10));
+    //             hello##10 => hello10
+
+    printf("%d\n", CONCAT(HELLO, 10));
+    //             => CONCAT_IMPL(hello, 10)
+    //             => hello##10
+    //             => hello10
+
     printf("%s\n", TO_STR(hello));
     // #hello => "hello"
 
