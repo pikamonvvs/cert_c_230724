@@ -75,9 +75,17 @@ int main(void)
 #endif
 
 // 5. 매크로 상수를 사용할 때도, 괄호로 감싸주는 것이 좋습니다.
-#define INFO (-1)
-#define WARN (-2)
-#define ERROR (-3)
+// 해결 방법 1.
+// #define INFO (-1)
+// #define WARN (-2)
+// #define ERROR (-3)
+
+// 해결 방법 2. enum 상수
+enum {
+    INFO = -1,
+    WARN = -2,
+    ERROR = -3,
+};
 
 void log_print(int level, const char* message)
 {
