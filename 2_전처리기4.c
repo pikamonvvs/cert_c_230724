@@ -25,6 +25,7 @@ int main(void)
 }
 #endif
 
+#if 0
 int cnt = 0;
 
 void print_cnt(void)
@@ -50,3 +51,4 @@ int main(void)
 
     return 0;
 }
+#endif

@@ -32,6 +32,7 @@ int main(void)
 #endif
 
 // 아래 코드를 인라인 함수를 통해 변경해보세요.
+#if 1
 #include <stdio.h>
 
 int operations = 0; /* 전체 함수 호출 횟수 */
@@ -78,3 +79,4 @@ int main(void)
 
     return 0;
 }
+#endif
