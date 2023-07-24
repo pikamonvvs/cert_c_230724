@@ -32,9 +32,15 @@ struct color colors[] = {
 };
 #endif
 
-#define COLOR(color)          \
-    {                         \
-        Color_##color, #color \
+#define CONCAT_IMPL(a, b) a##b
+#define CONCAT(a, b) CONCAT_IMPL(a, b)
+
+#define TO_STR_IMPL(str) #str
+#define TO_STR(str) TO_STR_IMPL(str)
+
+#define COLOR(color)                         \
+    {                                        \
+        CONCAT(Color_, color), TO_STR(color) \
     }
 
 struct color colors[] = {
