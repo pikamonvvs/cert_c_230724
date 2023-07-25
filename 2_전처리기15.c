@@ -40,5 +40,6 @@ int main(void)
 {
     struct complex c;
 
+    // AUTOSAR
     int _local = 10; // 허용 O
 }
