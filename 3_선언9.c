@@ -142,6 +142,7 @@ int main(void)
 }
 #endif
 
+// MISRA:2023
 // errno
 // 1) errno를 변경하는 함수를 사용하기 전에,
 //    0 인지 여부를 체크해야 합니다.
