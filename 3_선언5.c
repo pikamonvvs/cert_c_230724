@@ -80,8 +80,8 @@ int main(void)
 
 int main(void)
 {
-    // STATIC_ASSERT(sizeof(long) == 8, "long size must be 8");
-    STATIC_ASSERT(sizeof(long) == 4, "long size must be 4");
+    STATIC_ASSERT(sizeof(long) == 8, "long size must be 8");
+    // STATIC_ASSERT(sizeof(long) == 4, "long size must be 4");
 
     return 0;
 }
