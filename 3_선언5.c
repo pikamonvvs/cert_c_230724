@@ -6,7 +6,36 @@
 // 2) 구조체를 통해 파일에 저장하거나, 데이터의 교환을 목적으로 사용할 경우,
 //    패딩을 제거하는 형태로 사용해야 합니다.
 
-#pragma pack(1) // 컴파일러 확장 명령
+// #pragma pack(1) // 컴파일러 확장 명령
+
+// assert
+// 1) assert(단언문)은 취약성이 있는 소프트웨어의 결함을 찾아서 제거하는데 사용되는
+//    효과적인 진단 도구 입니다.
+// 2) 조건이 성립되지 않을 경우, abort() 를 통해 프로세스를 비정상 종료합니다.
+// 3) NDEBUG가 정의되어 있으면, assert는 아무 동작도 수행하지 않습니다.
+
+// 제약사항
+// 1) 프로그램 실행 중에 동작하기 때문에, 실행 시간 오버헤드가 존재합니다.
+// 2) assert의 비정상 종료는 abort()를 호출하기 때문에,
+//    서버 프로그램이나 임베디드 시스템에서 사용하기 어렵습니다.
+
+// => 조건식을 컴파일 시간에 체크할 수 있다면,
+//    static_assert를 이용하는 것이 좋습니다.
+//    C11: static_assert / _Static_assert
+
+#include <stdlib.h>
+
+#ifndef NDEBUG
+#define xassert(expr)                                         \
+    do {                                                      \
+        if (!(expr)) {                                        \
+            fprintf(stderr, "Assertion failed: %s\n", #expr); \
+            abort();                                          \
+        }                                                     \
+    } while (0)
+#else
+#define xassert(expr) (void)0
+#endif
 
 struct packet {
     unsigned char cmd;
@@ -17,7 +46,9 @@ struct packet {
 void process(struct packet* packet)
 {
     // 반드시 구조체의 크기가 5이어여 합니다.
-    assert(sizeof(struct packet) == 5);
+    // assert(sizeof(struct packet) == 5);
+    // static_assert(sizeof(struct packet) == 5, "Size must be 5");
+    _Static_assert(sizeof(struct packet) == 5, "Size must be 5");
 
     printf("process\n");
 }
