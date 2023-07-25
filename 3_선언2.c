@@ -71,6 +71,8 @@ int main(void)
 }
 #endif
 
+// clang-format
+// => C/C++의 코딩 컨벤션 포맷팅 도구입니다.
 int main(void)
 {
     int x = 10;
