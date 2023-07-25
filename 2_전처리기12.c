@@ -24,9 +24,9 @@ int main(void)
 #ifdef __STDC_VERSION__
     printf("%ld\n", __STDC_VERSION__);
 #endif
-    // 199901: C99
-    // 201112: C11
-    // 201710: C17
+    // 199901L: C99
+    // 201112L: C11
+    // 201710L: C17
 
     return 0;
 }

@@ -40,11 +40,13 @@ int main(void)
         40);
 #endif
 
+#if 1
     // 해결 방법
 #if (MORE_ARGS == 1)
     int result = CALL_FOO(10, 20, 30, 40);
 #else
     int result = CALL_FOO(10, 20, 40);
+#endif
 #endif
 
     printf("result: %d\n", result);

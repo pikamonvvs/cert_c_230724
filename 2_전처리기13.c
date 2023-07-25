@@ -83,6 +83,25 @@ int main(void)
 }
 #endif
 
+#define CONCAT_IMPL(a, b) a##b
+#define CONCAT(a, b) CONCAT_IMPL(a, b)
+
+// #define UNIQUE_NAME(prefix) CONCAT(a, __LINE__)
+#define UNIQUE_NAME(prefix) CONCAT(a, __COUNTER__)
+
+// __COUNTER__: 미리 정의된 매크로
+//              사용할 때마다 0부터 1씩 증가합니다.
+// => C11 표준에서 정식으로 도입되었습니다.
+// <활용>
+// - 참조 되지 않는 고유 식별자를 생성할 때
+// - 실행 경로를 파악할 때
+
+int main(void)
+{
+    int UNIQUE_NAME(a);
+    int UNIQUE_NAME(a);
+}
+
 // 해결 방법 1.
 //  => 타입 인자를 추가적으로 전달 받습니다.
 #if 0
@@ -111,6 +130,9 @@ int main(void)
 //     ({...})
 //      - MSVC는 지원하지 않습니다.
 
+//  => 플랫폼 의존적인 코드를 사용하는 것은 지양해야 합니다.
+
+#if 0
 #define SWAP(a, b)             \
     ({                         \
         __typeof(a) __tmp = a; \
@@ -129,3 +151,4 @@ int main(void)
 
     return 0;
 }
+#endif
