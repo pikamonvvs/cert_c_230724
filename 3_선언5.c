@@ -21,8 +21,12 @@
 
 // => 조건식을 컴파일 시간에 체크할 수 있다면,
 //    static_assert를 이용하는 것이 좋습니다.
-//    C11: static_assert / _Static_assert
+//     C11: static_assert / _Static_assert
+//   C++11: static_assert
+//   - 조건이 성립되지 않는다면, 컴파일 오류가 발생합니다.
+//   => static_assert를 사용하는 것이 좋습니다.
 
+#if 0
 #include <stdlib.h>
 
 #ifndef NDEBUG
@@ -59,6 +63,25 @@ int main(void)
 
     struct packet packet = { 0 };
     process(&packet);
+
+    return 0;
+}
+#endif
+
+// static_assert를 직접 구현해서 사용할 수 있습니다.
+// 배열의 크기를 음수로 지정할 수 없는 특징을 이용합니다.
+//  : int arr[-1]; /* 에러 */
+
+#define CONCAT_IMPL(a, b) a##b
+#define CONCAT(a, b) CONCAT_IMPL(a, b)
+
+#define STATIC_ASSERT(expr, message) \
+    typedef char CONCAT(assertion_failed_at_line_, __LINE__)[(expr) ? 1 : -1]
+
+int main(void)
+{
+    STATIC_ASSERT(sizeof(long) == 8, "long size must be 8");
+    // STATIC_ASSERT(sizeof(long) == 4, "long size must be 4");
 
     return 0;
 }
