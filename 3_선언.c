@@ -29,6 +29,7 @@ int main(void)
 }
 #endif
 
+#if 0
 // 2. 구조체를 함수의 인자로 주소를 전달 할때,
 //    값을 변경하지 않는다면, 반드시 const를 사용해야 합니다.
 void PrintUser(const struct user* user)
@@ -52,6 +53,32 @@ int main(void)
     PrintUser(&u1);
 
     const struct user u2 = { .name = "Tom", .age = 42 }; /* 불변성 */
+
+    return 0;
+}
+#endif
+
+#include <string.h>
+// strchr
+//  : char *strchr(const char *s, int c);
+
+int main(void)
+{
+    // char* s1 = "hello";
+    const char* s1 = "hello";
+    // 문자열 리터럴은 읽기 전용 메모리에 존재합니다.
+    // => 문자열 리터럴을 참조할 때는 반드시 const char*를 사용해야 합니다.
+
+    // s1[0] = 'x'; /* 미정의 동작 */
+
+    // char* p = strchr(s1, 'e');
+    const char* p = strchr(s1, 'e');
+    // 수정이 불가능한 문자열 리터럴을 제공한 경우, 반환을 const char*로 받아야 합니다.
+
+    if (p != NULL) {
+        // *p = 'x'; /* 미정의 동작 */
+        printf("%c\n", *p);
+    }
 
     return 0;
 }
