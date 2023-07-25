@@ -36,8 +36,17 @@ void foo(void) { } // OK!
 // int add();
 int add(int a, int b);
 
+// K&R Style => 사용하면 안됩니다.
+int sub(a, b)
+int a, b;
+{
+    return a - b;
+}
+
 int main(void)
 {
+    printf("%d\n", sub(100, 20));
+
     // foo(10);
     // goo(10);
 
@@ -45,11 +54,11 @@ int main(void)
     // 함수의 인자가 선언된 것보다 적거나 많이 전달되는 것은
     // 미정의 동작입니다.
 
-    int (*fp1)(void) = &foo;
-    int (*fp2)() = &foo;
+    // int (*fp1)(void) = &foo;
+    // int (*fp2)() = &foo;
 
     // fp1(100);
-    fp2(100, 200);
+    // fp2(100, 200);
 
     return 0;
 }
