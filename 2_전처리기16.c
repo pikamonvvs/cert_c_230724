@@ -10,11 +10,11 @@
 
 int main(void)
 {
-    TRACE("hello\n");
+    TRACE("hello\n"); // fprintf(stderr, "hello\n")
 
     int a = 42;
     double d = 3.14;
-    TRACE("%d %lf\n", a, d);
+    TRACE("%d %lf\n", a, d); // fprintf(stderr, "%d %lf\n", a, d)
 
     return 0;
 }
@@ -82,25 +82,6 @@ void show(int n)
 #if 0
 int main(void)
 {
-    int n = COUNT(1, 2, 3);
-    // =>   COUNT_IMPL(1,  2,  3,  5,  4,  3, 2, 1, 0)
-    //                _1, _2, _3, _4, _5, [N]
-
-    printf("%d\n", n);
-
-    n = COUNT(1, 2, 3, 4, 5);
-    // =>   COUNT_IMPL(1,  2,  3,  4,  5,  5,  4,  3, 2, 1, 0)
-    //                _1, _2, _3, _4, _5, [N]
-
-    printf("%d\n", n);
-
-    return 0;
-}
-#endif
-
-#if 0
-int main(void)
-{
     FE_1(show, 10); // show(10)
     printf("-----\n");
     FE_2(show, 10, 20); // show(10) / show(20)
@@ -129,6 +110,26 @@ int main(void)
 }
 #endif
 
+#if 0
+int main(void)
+{
+    int n = COUNT(1, 2, 3);
+    // =>   COUNT_IMPL(1,  2,  3,  5,  4,  3, 2, 1, 0)
+    //                _1, _2, _3, _4, _5, [N]
+
+    printf("%d\n", n);
+
+    n = COUNT(1, 2, 3, 4, 5);
+    // =>   COUNT_IMPL(1,  2,  3,  4,  5,  5,  4,  3, 2, 1, 0)
+    //                _1, _2, _3, _4, _5, [N]
+
+    printf("%d\n", n);
+
+    return 0;
+}
+#endif
+
+#if 1
 int main(void)
 {
     FOREACH(show, 1, 2, 3, 4, 5);
@@ -137,3 +138,4 @@ int main(void)
 
     return 0;
 }
+#endif

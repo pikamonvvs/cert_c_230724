@@ -11,7 +11,6 @@ struct user {
 // 1. 구조체를 함수의 인자로 전달할 때, call by value를 사용하는 것은
 //    복사의 비용이 비효율적입니다.
 //  => 포인터를 이용해서 주소를 전달합니다.
-
 #if 0
 void PrintUser(struct user user)
 {
@@ -58,6 +57,7 @@ int main(void)
 }
 #endif
 
+#if 1
 #include <string.h>
 // strchr
 //  : char *strchr(const char *s, int c);
@@ -82,3 +82,4 @@ int main(void)
 
     return 0;
 }
+#endif
