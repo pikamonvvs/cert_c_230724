@@ -124,13 +124,19 @@ int main(void)
 // 핵심: C에서 함수를 설계할 때,
 //      메모리를 할당해서, 주소를 결과로 주는 형태의 함수는 지양해야 합니다.
 //      함수를 사용하는 사용자쪽에서 메모리를 제공하는 형태로 설계되어야 합니다.
-
+#if 0
 enum {
     ARRAY_SIZE = 10
 };
 
-void init_array(int arr[ARRAY_SIZE])
+// 배열을 인자로 전달하면, 배열의 첫번째 원소의 시작 주소가 전달됩니다.
+//  - void init_array(int arr[ARRAY_SIZE])
+
+// 배열을 인자로 전달할 때, 포인터로 표기하는 것이 좋습니다.
+void init_array(int* arr)
 {
+    printf("%zu\n", sizeof(arr)); // 8
+
     for (int i = 0; i < ARRAY_SIZE; i++) {
         arr[i] = i + 1;
     }
@@ -140,10 +146,53 @@ int main(void)
 {
     int arr[ARRAY_SIZE];
     init_array(arr);
+    // 배열의 이름은 배열의 첫번째 원소의 시작 주소로 해석됩니다.
 
     for (int i = 0; i < ARRAY_SIZE; i++) {
         printf("%d\n", arr[i]);
     }
+
+    return 0;
+}
+#endif
+
+// C/C++ 에서 변수의 타입을 구하는 방법
+// : 식별자를 제외한 나머지가 타입입니다.
+// int  n;  => int
+// int *p;  => int *
+
+// Decay(부식)
+// => 배열의 이름은 배열의 첫번째 원소의 시작 주소로 해석됩니다.
+// 예외
+// 1) sizeof
+// 2) &
+
+int main(void)
+{
+    int x[3] = { 10, 20, 30 };
+    // x의 타입은 무엇인가요?
+    //   int[3]
+
+    // int* p = x;
+    int* p = &x[0];
+    // 배열의 이름은 배열의 첫번째 원소의 시작 주소로 해석됩니다.
+    // => Decay
+
+    printf("%zu\n", sizeof(p)); // 8
+    printf("%zu\n", sizeof(int*));
+
+    printf("%zu\n", sizeof(x)); // 12
+    printf("%zu\n", sizeof(int[3]));
+
+    // p2는 어떤 타입되어야 할까요?
+    //  - x는 int[3] 타입으로 정확하게 해석됩니다.
+
+    int(*p2)[3]; // p2 ----->  int[3]
+    p2 = &x;
+
+    (*p2)[0] = 100;
+    (*p2)[1] = 200;
+    (*p2)[2] = 300;
 
     return 0;
 }
