@@ -48,6 +48,14 @@ int main(void)
 
 // - 런타임 상수
 //   => 런타임 상수의 값을 읽기 위해서 메모리로부터 값을 로드합니다.
+
+const int size = 100;
+//   C: External linkage
+//  => 상수 전역 변수는 소스 파일에 둡니다.
+
+// C++: Internal linkage
+//  => 상수 전역 변수는 헤더 파일에 둡니다.
+
 int main(void)
 {
     const int c1 = 42;
