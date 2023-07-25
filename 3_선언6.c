@@ -86,6 +86,10 @@ int main(void)
 // => strdup
 //     : 인자로 받은 문자열을 동적 메모리할당하여 복사합니다.
 #if 0
+enum {
+    ARRAY_SIZE = 10
+};
+
 void init_array(int** ptr_param)
 {
     int* arr = malloc(sizeof(int) * ARRAY_SIZE);
@@ -232,6 +236,7 @@ int main(void)
 }
 #endif
 
+#if 0
 // C 에서는 배열 포인터 또는 함수 포인터를 반환 함수의 시그니처는
 // 가독성이 떨어집니다.
 // => typedef를 통해 가독성을 확보할 수 있습니다.
@@ -273,3 +278,4 @@ int main(void)
 
     return 0;
 }
+#endif

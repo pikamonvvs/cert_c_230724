@@ -97,6 +97,7 @@ struct point* add(const struct point* pt1, const struct point* pt2)
 }
 #endif
 
+#if 0
 // 사용자 정의 타입을 처리하는 일반적인 함수의 형태
 void add(const struct point* pt1, const struct point* pt2,
     struct point* result)
@@ -105,7 +106,6 @@ void add(const struct point* pt1, const struct point* pt2,
     result->y = pt1->y + pt2->y;
 }
 
-#if 1
 int main(void)
 {
     struct point pt1 = { .x = 10, .y = 20 };
@@ -123,7 +123,7 @@ int main(void)
 }
 #endif
 
-#if 0
+#if 1
 // C 에서 파라미터는 지역 변수와 동일하게 취급됩니다.
 int add2(int a, int b)
 {
