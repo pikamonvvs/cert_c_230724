@@ -8,4 +8,6 @@ struct complex {
     int image;
 };
 
+// extern int _global;
+
 #endif

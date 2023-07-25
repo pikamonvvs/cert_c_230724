@@ -25,7 +25,7 @@ struct complex {
 // _COMPLEX_H_  <- 허용 X
 // __Complex_H_ <- 허용 X
 
-int _global = 10; // <- 허용 X
+static int _global = 10; // <- 허용 X
 void _foo(void) { } // <- 허용 X
 
 struct _complex {
