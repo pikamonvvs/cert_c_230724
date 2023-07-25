@@ -105,6 +105,7 @@ void add(const struct point* pt1, const struct point* pt2,
     result->y = pt1->y + pt2->y;
 }
 
+#if 1
 int main(void)
 {
     struct point pt1 = { .x = 10, .y = 20 };
@@ -114,9 +115,31 @@ int main(void)
     // print_point(&result);
 
     struct point result;
-    add(&pt1, &pt2, &result);
+    add2(&pt1, &pt2, &result);
 
     print_point(&result);
 
     return 0;
 }
+#endif
+
+#if 0
+// C 에서 파라미터는 지역 변수와 동일하게 취급됩니다.
+int add2(int a, int b)
+{
+    // => 함수로 전달된 파라미터를 변경하는 행위는 안됩니다.
+    // a = 10; // NO
+    // b = 20; // NO
+    int ra = a;
+
+    return a + b;
+}
+
+int main(void)
+{
+    int a = 10;
+    int b = 20;
+
+    int result = add2(a, b);
+}
+#endif
