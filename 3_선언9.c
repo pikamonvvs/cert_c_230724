@@ -63,7 +63,7 @@ enum {
 
 error_t divide(int divided, int divisor, int* result)
 {
-    int error = 0;
+    error_t error = 0;
     if (divisor == 0) {
         error = DIVISION_BY_ZERO;
     } else if (result == NULL) {
