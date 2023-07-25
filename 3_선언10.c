@@ -71,5 +71,9 @@ int main(void)
     result = average(10, 20, VA_END);
     printf("result: %d\n", result);
 
+    // 문제점
+    result = average(10, 20, -1, VA_END);
+    printf("result: %d\n", result);
+
     return 0;
 }
