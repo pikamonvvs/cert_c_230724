@@ -26,8 +26,9 @@ int main(void)
 }
 #endif
 
+#if 0
 void foo(void) { } // OK!
-// void goo() { }
+// void goo() { } // NO!
 // 컴파일 타임에 인자를 체크하지 않습니다.
 
 // C++은
@@ -54,8 +55,8 @@ int main(void)
     // 함수의 인자가 선언된 것보다 적거나 많이 전달되는 것은
     // 미정의 동작입니다.
 
-    // int (*fp1)(void) = &foo;
-    // int (*fp2)() = &foo;
+    // int (*fp1)(void) = &foo; // OK!
+    // int (*fp2)() = &foo; // NO!
 
     // fp1(100);
     // fp2(100, 200);
@@ -63,3 +64,14 @@ int main(void)
 }
 
 int add(int a, int b) { return a + b; }
+#endif
+
+// int add(int, int);
+int add(int a, int b); // => 이렇게 사용하는 것이 좋습니다.
+
+int main(void)
+{
+    return 0;
+}
+
+// int add(int a, int b) { return a + b; }
