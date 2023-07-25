@@ -79,15 +79,6 @@ void show(int n)
 
 #define FOREACH(FUNC, ...) FOREACH_N(COUNT(__VA_ARGS__), FUNC, __VA_ARGS__)
 
-int main(void)
-{
-    FOREACH(show, 1, 2, 3, 4, 5);
-    printf("------");
-    FOREACH(show, 1, 2, 3);
-
-    return 0;
-}
-
 #if 0
 int main(void)
 {
@@ -137,3 +128,12 @@ int main(void)
     return 0;
 }
 #endif
+
+int main(void)
+{
+    FOREACH(show, 1, 2, 3, 4, 5);
+    printf("------\n");
+    FOREACH(show, 1, 2, 3);
+
+    return 0;
+}
