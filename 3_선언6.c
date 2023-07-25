@@ -198,6 +198,7 @@ int main(void)
 }
 #endif
 
+#if 0
 void print_array(int (*x)[2], int n)
 {
     for (int i = 0; i < n; i++) {
@@ -226,6 +227,49 @@ int main(void)
     // 배열의 길이를 구하는 연산
     // printf("%lu\n", sizeof(arr) / sizeof(int));
     printf("%lu\n", sizeof(arr) / sizeof(arr[0]));
+
+    return 0;
+}
+#endif
+
+// C 에서는 배열 포인터 또는 함수 포인터를 반환 함수의 시그니처는
+// 가독성이 떨어집니다.
+// => typedef를 통해 가독성을 확보할 수 있습니다.
+//  : 변수를 선언하는 문법에서 typedef를 통해 타입 별칭을 만들 수 있습니다.
+
+// typedef int A;    // A == int
+// typedef int X[3]; // X == int[3]
+
+typedef int ARR3[3]; // ARR3 == int[3]
+
+// int (*foo(void))[3]
+ARR3* foo(void)
+{
+    static int x[3] = { 10, 20, 30 };
+    return &x; // int(*)[3]
+}
+
+int add(int a, int b) { return a + b; }
+
+typedef int (*FP)(int, int); // FP == int (*)(int, int)
+
+// int (*goo(void))(int, int)
+FP goo(void)
+{
+    return &add; // int (*)(int, int)
+}
+
+int main(void)
+{
+    int(*p)[3] = foo();
+    printf("%d\n", (*p)[0]);
+    printf("%d\n", (*p)[1]);
+    printf("%d\n", (*p)[2]);
+
+    printf("------\n");
+
+    int (*fp)(int, int) = goo();
+    printf("%d\n", fp(10, 20));
 
     return 0;
 }
