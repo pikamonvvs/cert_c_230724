@@ -166,7 +166,7 @@ int main(void)
 // 예외
 // 1) sizeof
 // 2) &
-
+#if 0
 int main(void)
 {
     int x[3] = { 10, 20, 30 };
@@ -193,6 +193,39 @@ int main(void)
     (*p2)[0] = 100;
     (*p2)[1] = 200;
     (*p2)[2] = 300;
+
+    return 0;
+}
+#endif
+
+void print_array(int (*x)[2], int n)
+{
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < 2; j++) {
+            printf("%3d ", x[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int main(void)
+{
+    int x[3][2] = { { 1, 2 }, { 3, 4 }, { 5, 6 } };
+    // 1) x는 어떤 타입인가요?
+    // : x[3][2]
+
+    // 2) x의 배열의 길이는 얼마인가요?
+    // : 3개 크기의 배열입니다. 하나의 원소 타입이 int[2] 입니다.
+    //  [ int[2] ][ int[2] ][ int[2] ]
+    print_array(x, 3);
+
+    printf("%lu\n", sizeof(x) / sizeof(x[0])); // 3
+
+    int arr[5];
+
+    // 배열의 길이를 구하는 연산
+    // printf("%lu\n", sizeof(arr) / sizeof(int));
+    printf("%lu\n", sizeof(arr) / sizeof(arr[0]));
 
     return 0;
 }
