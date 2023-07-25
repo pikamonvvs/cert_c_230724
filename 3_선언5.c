@@ -50,9 +50,9 @@ struct packet {
 void process(struct packet* packet)
 {
     // 반드시 구조체의 크기가 5이어여 합니다.
-    // assert(sizeof(struct packet) == 5);
+    assert(sizeof(struct packet) == 5);
     // static_assert(sizeof(struct packet) == 5, "Size must be 5");
-    _Static_assert(sizeof(struct packet) == 5, "Size must be 5");
+    // _Static_assert(sizeof(struct packet) == 5, "Size must be 5");
 
     printf("process\n");
 }
@@ -71,7 +71,7 @@ int main(void)
 // static_assert를 직접 구현해서 사용할 수 있습니다.
 // 배열의 크기를 음수로 지정할 수 없는 특징을 이용합니다.
 //  : int arr[-1]; /* 에러 */
-
+#if 0
 #define CONCAT_IMPL(a, b) a##b
 #define CONCAT(a, b) CONCAT_IMPL(a, b)
 
@@ -85,3 +85,4 @@ int main(void)
 
     return 0;
 }
+#endif
