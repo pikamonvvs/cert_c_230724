@@ -71,4 +71,34 @@ inc2    ENDP
 
 int main(void)
 {
+    int a = 10;
+
+    inc1(&a, &a, &a);
+    printf("%d\n", a); // 40
+
+    a = 10;
+    inc2(&a, &a, &a);
+    printf("%d\n", a); // 30
+
+    return 0;
 }
+
+#if 0
+int main(void)
+{
+    int a = 10;
+    int b = 20;
+    int x = 100;
+
+    inc1(&a, &b, &x);
+    printf("%d %d %d\n", a, b, x);
+
+    a = 10;
+    b = 20;
+    x = 100;
+    inc2(&a, &b, &x);
+    printf("%d %d %d\n", a, b, x);
+
+    return 0;
+}
+#endif
