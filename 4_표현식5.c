@@ -73,6 +73,7 @@ struct user {
 #endif
 
 // GCC
+#if 0
 struct user {
     char name[10];
     double height;
@@ -108,6 +109,22 @@ int main(void)
     };
 
     save(users, 3);
+
+    return 0;
+}
+#endif
+
+#pragma pack(2)
+
+struct AAA {
+    int n;
+    double d;
+    char c;
+};
+
+int main(void)
+{
+    printf("%zu\n", sizeof(struct AAA));
 
     return 0;
 }
