@@ -120,7 +120,7 @@ struct AAA {
     int n;
     double d;
     char c;
-} __attribute__((aligned(2)));
+} __attribute__((packed, aligned(2)));
 
 int main(void)
 {
