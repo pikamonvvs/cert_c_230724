@@ -54,7 +54,7 @@ int main(void)
 //  해결 방법
 //   - 에러를 반환하는 함수는 함수의 반환 타입을 에러 타입으로 사용하는 것이 좋습니다.
 //   - 에러 코드도 매직 넘버가 아닌 심볼릭 상수를 사용하는 것이 좋습니다.
-#if 1
+#if 0
 typedef int error_t;
 enum {
     DIVISION_BY_ZERO = -100,
@@ -93,7 +93,7 @@ int main(void)
 }
 #endif
 
-#if 0
+#if 1
 // 1. errno 전역 변수를 통해 에러의 원인을 파악할 수 있습니다.
 #include <errno.h>
 
