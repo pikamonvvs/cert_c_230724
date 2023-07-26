@@ -8,7 +8,7 @@ struct user {
     char password[32];
 };
 
-USER current = {
+static USER current = {
     .name = "admin",
     .password = "admin_password",
 };
