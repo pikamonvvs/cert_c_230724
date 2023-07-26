@@ -69,6 +69,10 @@ int main(void)
 }
 #endif
 
+void foo(int a, int b)
+{
+}
+
 int main(void)
 {
     int a, b, c;
@@ -78,6 +82,10 @@ int main(void)
     // a = b = (c = 10);
     // a = (b = 10));
     // a = (10);
+
+    // 나열 연산자(, operator)
+    // => 사용하지 않는 것이 좋습니다.
+    foo(10, (20, 30));
 
     return 0;
 }
