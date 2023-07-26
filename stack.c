@@ -1,6 +1,12 @@
 // stack.c
 #include "stack.h"
 
+struct stack {
+    void** arr;
+    int top;
+    int size;
+};
+
 #include <stdio.h>
 #include <stdlib.h>
 
