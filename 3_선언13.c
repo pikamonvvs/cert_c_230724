@@ -1,6 +1,7 @@
 // 3_선언13.c
 #include <stdio.h>
 
+#if 0
 #include "user.h"
 
 // extern USER current;
@@ -43,6 +44,38 @@ int main(void)
 
     // print_user(&current);
     printf("%d\n", global);
+
+    return 0;
+}
+#endif
+
+// C/C++
+//  => 컴파일의 번역 단위는 파일입니다.
+
+#include <stdio.h>
+
+// 선언이 호환되지 않으면, 미정의 동작이 발생합니다.
+
+// 전역 변수 선언은 extern을 명시해야 합니다.
+extern long n;
+
+// extern int* arr;
+extern int arr[];
+
+// extern int f(int a);
+extern long f(long a);
+
+int main(void)
+{
+    printf("%ld\n", ++n);
+    // 할당되지 않은 영역에 대한 수정이 발생합니다.
+    // => 미정의 동작입니다.
+
+    for (int i = 0; i < 3; i++) {
+        printf("%d\n", arr[i]);
+    }
+
+    printf("%d\n", f(100));
 
     return 0;
 }

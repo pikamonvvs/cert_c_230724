@@ -23,14 +23,15 @@ typedef struct obj {
 // => struct obj* const [O]
 // 문제점: 포인터를 typedef 한 경우, const가 의도한대로 동작하지 않을 수 있습니다.
 
+// void print_obj(const struct obj* obj)
 void print_obj(const POBJECT obj)
 {
     printf("%d, %f\n", obj->i, obj->f);
 
     // obj = NULL; => ERROR
 
-    // obj->i = 42; => OK
-    // obj->f = 10.5; => OK
+    obj->i = 42; // => OK
+    obj->f = 10.5; // => OK
 }
 
 int main(void)
@@ -67,6 +68,7 @@ int main(void)
 }
 #endif
 
+#if 1
 // 해결 방법 2. 읽기 전용 포인터의 typedef도 함께 제공합니다.
 //   => 전통적인 Windows API의 구현 방식
 typedef struct obj {
@@ -91,3 +93,4 @@ int main(void)
 
     return 0;
 }
+#endif

@@ -11,7 +11,7 @@ struct user {
 // 전역 변수는 함수를 통해 상태를 접근하도록 제어하는 것이
 // 좋습니다.
 // => static, Internal linkage
-static USER current = {
+USER current = {
     .name = "admin",
     .password = "admin_password",
 };
