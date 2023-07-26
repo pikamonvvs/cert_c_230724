@@ -16,7 +16,7 @@
 // MISRA
 //  : restrict 사용하지 말라!
 /// => 표준 라이브러리에서 제공하는 함수를 사용하는 것은 허용됩니다.
-//     새로운 정의할 때, restrict 최적화를 사용하지 말아야 합니다.
+//     새로운 함수를 정의할 때, restrict 최적화를 사용하지 말아야 합니다.
 
 #if 0
 void print_data(int* data, int n)
@@ -37,14 +37,15 @@ int main(void)
     int data[10] = { 1, 2, 3, 4, 5 };
     print_data(data, 10);
 
-    memcpy(data + 1, data, sizeof(int) * 5);
-    // memmove(data + 1, data, sizeof(int) * 5);
+    // memcpy(data + 1, data, sizeof(int) * 5);
+    memmove(data + 1, data, sizeof(int) * 5);
     print_data(data, 10);
 
     return 0;
 }
 #endif
 
+#if 1
 void inc1(int* a, int* b, int* x)
 {
     *a += *x;
@@ -77,6 +78,8 @@ inc2    ENDP
 */
 
 #if 0
+// restrict 한정자의 문제는 최적화 컴파일을 통해서만 관찰이 가능합니다.
+// $ gcc -O2 3_선언14.c
 int main(void)
 {
     int a = 10;
@@ -90,6 +93,7 @@ int main(void)
 
     return 0;
 }
+#endif
 #endif
 
 #if 0
