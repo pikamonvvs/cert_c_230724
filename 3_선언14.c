@@ -15,6 +15,8 @@
 
 // MISRA
 //  : restrict 사용하지 말라!
+/// => 표준 라이브러리에서 제공하는 함수를 사용하는 것은 허용됩니다.
+//     새로운 정의할 때, restrict 최적화를 사용하지 말아야 합니다.
 
 #if 0
 void print_data(int* data, int n)
