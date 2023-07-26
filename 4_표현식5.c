@@ -32,6 +32,8 @@ struct BBB {
     char c;
     double d;
 };
+// => 멤버 변수의 배치 순서에 따라, 패딩을 조절할 수 있습니다.
+//    제한된 메모리 환경에서는 유용합니다.
 
 int main(void)
 {
