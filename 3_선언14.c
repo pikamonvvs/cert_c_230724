@@ -11,6 +11,11 @@
 //  => restrict로 지정되어 있는 인자로
 //     같은 메모리 공간에 대한 참조가 발생할 수 있는 주소를 전달하면
 //     "미정의 동작"이 발생합니다.
+//  => 위의 현상에 대해서 컴파일 오류나 경고가 발생하지 않습니다.
+
+// MISRA
+//  : restrict 사용하지 말라!
+
 #if 0
 void print_data(int* data, int n)
 {
@@ -30,8 +35,8 @@ int main(void)
     int data[10] = { 1, 2, 3, 4, 5 };
     print_data(data, 10);
 
-    // memcpy(data + 1, data, sizeof(int) * 5);
-    memmove(data + 1, data, sizeof(int) * 5);
+    memcpy(data + 1, data, sizeof(int) * 5);
+    // memmove(data + 1, data, sizeof(int) * 5);
     print_data(data, 10);
 
     return 0;
@@ -69,6 +74,7 @@ inc2    PROC                                            ; COMDAT
 inc2    ENDP
 */
 
+#if 0
 int main(void)
 {
     int a = 10;
@@ -82,6 +88,7 @@ int main(void)
 
     return 0;
 }
+#endif
 
 #if 0
 int main(void)
