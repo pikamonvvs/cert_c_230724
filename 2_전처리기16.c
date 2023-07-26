@@ -35,6 +35,7 @@ int main(void)
 }
 #endif
 
+#if 1
 // 가변 인자 매크로 활용
 #include <stdio.h>
 
@@ -78,6 +79,7 @@ void show(int n)
 #define COUNT(...) COUNT_IMPL(__VA_ARGS__, 5, 4, 3, 2, 1, 0)
 
 #define FOREACH(FUNC, ...) FOREACH_N(COUNT(__VA_ARGS__), FUNC, __VA_ARGS__)
+#endif
 
 #if 0
 int main(void)
@@ -129,7 +131,6 @@ int main(void)
 }
 #endif
 
-#if 1
 int main(void)
 {
     FOREACH(show, 1, 2, 3, 4, 5);
@@ -138,4 +139,3 @@ int main(void)
 
     return 0;
 }
-#endif
