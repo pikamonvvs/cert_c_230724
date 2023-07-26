@@ -20,6 +20,14 @@
 // => MISRA
 //   - Advisory
 
+#if 0
+struct stack {
+    void* a;
+    int t;
+    int s;
+};
+#endif
+
 int main(void)
 {
     STACK* stack = create_stack(10);
@@ -27,6 +35,8 @@ int main(void)
     // 잘못된 행위
     // stack->top = 100;
     // stack->size = 50;
+
+    // printf("%d, %d\n", stack->t, stack->s);
 
     print_stack(stack);
 
