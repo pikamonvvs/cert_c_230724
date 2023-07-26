@@ -139,3 +139,23 @@ int main(void)
 
     return 0;
 }
+
+#if 0
+#include <stdio.h>
+
+#define LOG(fmt, ...) fprintf(stderr, fmt, ##__VA_ARGS__)
+// GNU Extention을 통해 가변인자 매크로를 통해 전달된 인자가 없는 경우,
+// 처리하는 방법을 제공합니다.
+// => ## 을 다른의미로 제공하고 있습니다.
+// => ##__VA_ARGS__
+//    비어있는 가변인자의 경우, 쉼표를 제거합니다.
+
+int main(void)
+{
+    int n = 42;
+    // LOG("hello: %d", n);
+    LOG("hello"); // fprintf(stderr, "hello", )
+
+    return 0;
+}
+#endif

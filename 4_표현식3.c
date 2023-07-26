@@ -50,6 +50,7 @@ int is_odd(int n)
 //       1101 0101 + 1
 //      -----------
 //       1101 0110
+#if 0
 int is_odd(int n)
 {
     // return n & 0x1 == 1;
@@ -70,3 +71,4 @@ int main(void)
 
     return 0;
 }
+#endif
