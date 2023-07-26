@@ -11,7 +11,6 @@
 //    허용됩니다.
 
 // const int c = 10;
-
 volatile int v = 0;
 
 int main(void)
