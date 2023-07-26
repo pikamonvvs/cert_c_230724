@@ -11,6 +11,7 @@
 //  => restrict로 지정되어 있는 인자로
 //     같은 메모리 공간에 대한 참조가 발생할 수 있는 주소를 전달하면
 //     "미정의 동작"이 발생합니다.
+#if 0
 void print_data(int* data, int n)
 {
     for (int i = 0; i < n; i++) {
@@ -34,4 +35,40 @@ int main(void)
     print_data(data, 10);
 
     return 0;
+}
+#endif
+
+void inc1(int* a, int* b, int* x)
+{
+    *a += *x;
+    *b += *x;
+}
+/*
+inc1    PROC
+        mov     eax, DWORD PTR [r8]          ; eax = *x
+        add     DWORD PTR [rcx], eax         ; *a += eax
+        mov     eax, DWORD PTR [r8]          ; eax = *x
+        add     DWORD PTR [rdx], eax         ; *b += eax
+        ret     0
+inc1    ENDP
+*/
+
+// restrict는 불러온 메모리에 대해서, 변경 가능성이 없다(중첩된 영역이 아니다)고 판단해서,
+// 메모리로부터 참조하는 연산을 최적화합니다.
+void inc2(int* restrict a, int* restrict b, int* restrict x)
+{
+    *a += *x;
+    *b += *x;
+}
+/*
+inc2    PROC                                            ; COMDAT
+        mov     eax, DWORD PTR [r8]          ; eax = *x;
+        add     DWORD PTR [rcx], eax         ; *a += eax;
+        add     DWORD PTR [rdx], eax         ; *b += eax;
+        ret     0
+inc2    ENDP
+*/
+
+int main(void)
+{
 }
