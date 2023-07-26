@@ -31,6 +31,7 @@ int main(void)
 //    : expr1 평가가 거짓인 경우, expr2 수행하지 않습니다.
 //   (expr1) || (expr2)
 //    | expr1 평가가 참인 경우, expr2 수행하지 않습니다.
+#if 0
 int main(void)
 {
     int a, b, c, d;
@@ -63,6 +64,20 @@ int main(void)
 
     printf("%d %d %d %d %d\n", a, b, c, d, e);
     // 1 1 0 1 0
+
+    return 0;
+}
+#endif
+
+int main(void)
+{
+    int a, b, c;
+
+    // 대입/복합 대입 연산자는 오른쪽에서 왼쪽으로 연산이 수행됩니다.
+    a = b = c = 10;
+    // a = b = (c = 10);
+    // a = (b = 10));
+    // a = (10);
 
     return 0;
 }
