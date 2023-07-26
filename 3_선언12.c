@@ -18,8 +18,8 @@ int main(void)
     STACK* stack = create_stack(10);
 
     // 잘못된 행위
-    stack->top = 100;
-    stack->size = 50;
+    // stack->top = 100;
+    // stack->size = 50;
 
     print_stack(stack);
 
