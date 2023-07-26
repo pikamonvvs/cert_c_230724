@@ -114,13 +114,13 @@ int main(void)
 }
 #endif
 
-#pragma pack(2)
+// #pragma pack(2)
 
 struct AAA {
     int n;
     double d;
     char c;
-};
+} __attribute__((aligned(2)));
 
 int main(void)
 {
