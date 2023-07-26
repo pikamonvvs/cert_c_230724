@@ -16,13 +16,13 @@ volatile int v = 0;
 int main(void)
 {
     const int c = 10;
-    int* pc = &c;
+    int* pc = &c; /* 컴파일 경고 */
 
     *pc = 100; /* 미정의 동작 */
     printf("%d\n", *pc); /* 미정의 동작 */
     printf("%d\n", c);
 
-    int* pv = &v;
+    int* pv = &v; /* 컴파일 경고 */
     *pv = 100; /* 미정의 동작 */
     printf("%d\n", *pv); /* 미정의 동작 */
 
