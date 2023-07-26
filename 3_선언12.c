@@ -12,6 +12,13 @@
 // [해결 방법]
 // => 구조체를 불투명한 타입(Opaque Type)을 통해 제공하면,
 //    외부에서의 접근을 제어할 수 있습니다.
+//  : 정보 은닉(Information Hiding)
+
+// => C++에서는 pImpl idiom 개념과 유사합니다.
+//  : 컴파일 속도를 증가하는 효과도 얻을 수 있습니다.
+
+// => MISRA
+//   - Advisory
 
 int main(void)
 {
