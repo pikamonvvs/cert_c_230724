@@ -25,3 +25,9 @@ void print_user(const USER* user)
 {
     printf("User: %s\n", user->name);
 }
+
+int global;
+void foo(void)
+{
+    printf("foo\n");
+}
