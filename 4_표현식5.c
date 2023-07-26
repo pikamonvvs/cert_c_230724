@@ -19,6 +19,7 @@ struct AAA {
 // - 구조체의 패딩이 어떤 형태로 생성되는지, 미지정 동작입니다.
 //   => 컴파일러, 실행 환경에 따라 패딩이 달라질 수 있습니다.
 
+#if 0
 struct AAA {
     int n;
     // char __padding1[4];
@@ -39,5 +40,74 @@ int main(void)
 {
     printf("%zu\n", sizeof(struct AAA));
     printf("%zu\n", sizeof(struct BBB));
+    return 0;
+}
+#endif
+
+#if 0
+     size_t
+     fread(void *restrict ptr, size_t size, size_t nitems,
+         FILE *restrict stream);
+
+     size_t
+     fwrite(const void *restrict ptr, size_t size, size_t nitems,
+         FILE *restrict stream);
+#endif
+
+// * 구조체를 파일로 저장하거나, 구조체를 네트워크로 전송하는 목적으로 사용할 때,
+//   플랫폼에 따라 패딩이 달라질 수 있습니다.
+//  => 패딩을 제거해야 합니다.
+//    "컴파일러 확장 명령을 통해 수행해야 합니다."
+
+// #pragma pack(1)
+// MSVC
+#if 0
+#pragma pack(push, 1)
+struct user {
+    char name[10];
+    double height;
+    int age;
+    double weight;
+};
+#pragma pack(pop)
+#endif
+
+// GCC
+struct user {
+    char name[10];
+    double height;
+    int age;
+    double weight;
+} __attribute__((packed));
+
+struct AAA {
+    int n;
+    double c;
+};
+
+void save(struct user* users, int n)
+{
+    FILE* fp = fopen("users.dat", "w");
+    if (fp == NULL) {
+        return;
+    }
+
+    fwrite(users, sizeof(struct user), n, fp);
+    fclose(fp);
+}
+
+int main(void)
+{
+    printf("%zu\n", sizeof(struct user));
+    printf("%zu\n", sizeof(struct AAA));
+
+    struct user users[3] = {
+        { .name = "Tom", .age = 42, .weight = .5, .height = .2 },
+        { .name = "Bob", .age = 15, .weight = .2, .height = .8 },
+        { .name = "Alice", .age = 22, .weight = .2, .height = .8 },
+    };
+
+    save(users, 3);
+
     return 0;
 }
