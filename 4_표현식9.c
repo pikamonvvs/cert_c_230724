@@ -22,7 +22,11 @@ int f(void)
 
     // 포인터의 산술 연산을 수행할 때, 바이트 단위의 처리를 위해서는
     // 명시적으로 char* 타입으로의 캐스팅이 필요합니다.
-    memset(s + skip, 0, sizeof(struct big) - skip); /* 잘못된 연산 */
+    // memset(s + skip, 0, sizeof(struct big) - skip); /* 잘못된 연산 */
+
+    // 해결 방법
+    memset((char*)s + skip, 0, sizeof(struct big) - skip);
+
     /* ... */
     free(s);
     s = NULL;
