@@ -19,9 +19,18 @@ int is_guest(void) { return 1; }
 int main(void)
 {
     int level;
-    if (is_user_login()) {
+#if 0
+    if (is_user_login())
         if (is_guest())
             level = GUEST;
+    else
+        level = ADMIN;
+#endif
+
+    if (is_user_login()) {
+        if (is_guest()) {
+            level = GUEST;
+        }
     } else {
         level = ADMIN;
     }
@@ -138,6 +147,9 @@ int main(void)
 
     case ADMIN:
         break;
+
+        // default:
+        //     break; /* OK - 마지막도 허용합니다. */
     }
 
     return 0;

@@ -14,12 +14,16 @@ int main(void)
 
 restart:
     if (a > 0) {
-        goto fail; /* OK */
+        goto fail; /* OK - 이후의 라벨로의 점프는 허용됩니다. */
     }
 
     if (a % 2 == 0) {
         a = 10;
-        goto restart; /* NO */
+        goto restart; /* NO - 이전의 라벨로의 점푸는 허용되지 않습니다.*/
+    }
+
+    if (a == 0) {
+    label1: // No - 허용되지 않습니다.
     }
 
 fail:
@@ -72,8 +76,8 @@ int main(void)
             }
         }
     }
-out:
 
+out:
     return 0;
 }
 #endif
@@ -136,6 +140,8 @@ enum {
     MAX = 10,
 };
 
+// https://www.youtube.com/watch?v=RwSaDVubdKk
+// Early-exit 구문은 허용되지 않습니다.
 int f(unsigned int n, char* p)
 {
     if (n > MAX) {
