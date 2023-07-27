@@ -20,7 +20,10 @@ void insert(struct list_head* head, struct list_head* new)
     head->next = new;
 }
 
-#if 0
+#define container_of(ptr, s, m) \
+    (s*)((char*)ptr - offsetof(s, m))
+
+#if 1
 int main(void)
 {
     struct user user1 = {
@@ -42,15 +45,21 @@ int main(void)
     while (current) {
         // struct user* 를 통해서 데이터를 출력하기 위해서는
         // 현재 link의 offset을 기준으로 계산이 필요합니다.
+        // => 1바이트 단위 연산을 포인터의 산술연산에서 수행하기 위해서는
+        //    (char*)로 캐스팅이 필요합니다.
+        // struct user* p = (struct user*)((char*)current - offsetof(struct user, link));
+        struct user* p = container_of(current, struct user, link);
+        printf("%s(%d) -> ", p->name, p->age);
 
-        printf("XXX\n");
         current = current->next;
     }
+    printf("<null>\n");
 
     return 0;
 }
 #endif
 
+#if 0
 // 구조체 멤버의 오프셋을 구하는 방법
 //  - C에서 &* 가 만나면 상쇄됩니다.
 //  - (*p).link
@@ -74,3 +83,4 @@ int main(void)
 
     return 0;
 }
+#endif
