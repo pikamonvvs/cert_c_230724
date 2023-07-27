@@ -50,6 +50,7 @@ int main(void)
 }
 #endif
 
+/*
 struct point {
     int x;
     int y;
@@ -74,6 +75,30 @@ int main(void)
     if (p3 > p4) {
         // ...
     }
+
+    return 0;
+}
+*/
+
+// 핵심: 포인터의 타입은 포인터의 산술 연산에서의 오프셋(단위)을 결정합니다.
+//  GCC: -pedantic
+//    표준적인 연산이 아닌 경우, 경고를 확인할 수 있습니다.
+
+int main(void)
+{
+    // void* => 가르키는 대상체 타입의 정보가 존재하지 않습니다.
+    //  목적: 모든 타입의 주소를 담을 수 있습니다.
+    int n = 42;
+    double d = 3.14;
+
+    void* p1 = &n;
+    void* p2 = &d;
+    // 참조를 비롯한 연산을 수행할 수 없습니다.
+
+    void* p = NULL;
+    // printf("%ld\n", (long)(p + 1)); // 표준이 아닙니다. GCC 확장
+
+    printf("%ld\n", (long)((char*)p + 1));
 
     return 0;
 }
