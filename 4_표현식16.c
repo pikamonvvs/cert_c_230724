@@ -104,6 +104,7 @@ int main(void)
 }
 #endif
 
+#if 0
 int main(void)
 {
     int state1 = 0;
@@ -124,4 +125,107 @@ int main(void)
     }
 
     return 0;
+}
+#endif
+
+// * 함수는 단일 종료 지점으로 만들어야 합니다.
+//  - 함수의 결과를 생성하는 여러 개의 종료 지점이 있는 경우
+//    함수의 실행 결과를 예측하기 어렵고, 결과가 처리되지 않는 문제도 발생할 수 있습니다.
+#if 0
+enum {
+    MAX = 10,
+};
+
+int f(unsigned int n, char* p)
+{
+    if (n > MAX) {
+        return 0;
+    }
+
+    if (p == NULL) {
+        return 0;
+    }
+
+    // ...
+
+    return 1;
+}
+
+int foo(void)
+{
+}
+
+int main(void)
+{
+    int result = foo(); /* 미정의 동작 */
+    printf("result: %d\n", result);
+    return 0;
+}
+#endif
+
+#if 0
+int copy_file(const char* dest, const char* src)
+{
+    FILE* srcFd = NULL;
+    FILE* destFd = NULL;
+
+    int error = 0;
+
+    srcFd = fopen(src, "r");
+    if (srcFd != NULL) {
+        destFd = fopen(dest, "w");
+        if (destFd != NULL) {
+
+            // copy ...
+
+            fclose(srcFd);
+            fclose(destFd);
+            error = 0;
+        } else {
+            fclose(srcFd);
+            error = 1;
+        }
+
+    } else {
+        error = 1;
+    }
+
+    return error;
+}
+#endif
+
+// 2) goto
+//  => 에러 핸들링
+//    : 실패 가능성 있는 함수는 반드시 반환값을 통해 오류를 처리해야 합니다.
+int copy_file(const char* dest, const char* src)
+{
+    FILE* srcFd = NULL;
+    FILE* destFd = NULL;
+
+    int error = 0;
+
+    srcFd = fopen(src, "r");
+    if (srcFd == NULL) {
+        error = 1;
+        goto err1;
+    }
+
+    destFd = fopen(dest, "w");
+    if (destFd == NULL) {
+        error = 1;
+        goto err2;
+    }
+
+    // copy ...
+    error = 0;
+
+    fclose(destFd);
+err2:
+    fclose(srcFd);
+err1:
+    return error;
+}
+
+int main(void)
+{
 }
