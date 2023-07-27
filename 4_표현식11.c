@@ -28,7 +28,7 @@ int main(void)
 //                 포인터간의 상대적 위치를 파악하는 목적으로 사용할 수 있습니다.
 //   포인터1 - 포인터2
 //   => (포인터1 - 포인터2) / sizeof(대상체 타입)
-
+#if 0
 int main(void)
 {
     int arr[5] = { 1, 2, 3, 4, 5 };
@@ -45,6 +45,35 @@ int main(void)
     // 다른 배열을 참조하는 포인터간의 뺄셈은 허용되지 않습니다.
     printf("%ld\n", p1 - p2); // 미정의 동작
     printf("%ld\n", p2 - p1); // 미정의 동작
+
+    return 0;
+}
+#endif
+
+struct point {
+    int x;
+    int y;
+};
+
+// * 포인터 간의 관계 연산자 >, <, >=, <= 는
+//   동일한 대상체를 가리키는 경우에만 사용해야 합니다.
+int main(void)
+{
+    int a1[10] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+    int* p1 = a1 + 3;
+    int* p2 = a1 + 5;
+    if (p1 < p2) {
+        // ...
+    }
+
+    struct point pt = { 10, 20 };
+
+    int* p3 = &pt.x;
+    int* p4 = &pt.y;
+    if (p3 > p4) {
+        // ...
+    }
 
     return 0;
 }
