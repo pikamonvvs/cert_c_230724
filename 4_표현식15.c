@@ -30,6 +30,7 @@ int main(void)
 }
 #endif
 
+#if 0
 // 2) if, else-if 구조에서는 반드시 else를 사용해야 합니다.
 enum {
     GUEST,
@@ -77,6 +78,66 @@ int main(void)
     // 단일 if 에서는 else가 강제되지 않습니다.
     if (is_user_login()) { /* OK */
         // ...
+    }
+
+    return 0;
+}
+#endif
+
+// Switch
+// => 1) 반드시 break를 작성해야 합니다.
+//    2) 의도적으로 break를 제외하는 경우, case 라벨 안에서
+//       아무것도 수행하면 안됩니다.
+//    3) default를 반드시 작성해야 합니다.
+//    4) default의 위치는 제일 위와 아래만 허용합니다.
+
+enum {
+    GUEST,
+    USER,
+    ADMIN
+};
+
+int main(void)
+{
+    int level = GUEST;
+
+/* NO */
+#if 0
+    switch (level) {
+    case GUEST:
+        printf("guest\n");
+    case USER:
+        printf("user\n");
+        break;
+    case ADMIN:
+        break;
+    }
+#endif
+
+#if 0
+    switch (level) {
+    case GUEST: // 아무일도 수행하지 않기 때문에 break를 의도적으로 사용하지 않는 것을 허용합니다.
+    case USER:
+        printf("user\n");
+        break;
+    case ADMIN:
+        break;
+    default:
+        break; // default에 break가 반드시 제공되어야 합니다.
+    }
+#endif
+
+    switch (level) {
+    default:
+        break; /* OK - 가장 위도 허용합니다. */
+
+    case GUEST:
+    case USER:
+        printf("user\n");
+        break;
+
+    case ADMIN:
+        break;
     }
 
     return 0;
