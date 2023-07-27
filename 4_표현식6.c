@@ -32,7 +32,7 @@ int compare(const struct s* left, const struct s* right)
 {
     int result = 0;
     if (left != NULL && right != NULL) {
-        result = left->c == right->c && left->i == right->i && memcmp(left->buffer, right->buffer, sizeof(left->buffer)) == 0;
+        result = (left->c == right->c) && (left->i == right->i) && (memcmp(left->buffer, right->buffer, sizeof(left->buffer)) == 0);
     }
 
     return result;
