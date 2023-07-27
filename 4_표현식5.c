@@ -3,8 +3,9 @@
 
 // 1) 구조체가 멤버가 아무것도 존재하지 않을 경우,
 //    사이즈는 0 입니다.
+//   => C에서는 비어있는 구조체는 미정의 사항입니다.
+//   => C++은 가능합니다. Empty Object
 
-// 비어있는 구조체는 미정의 사항입니다.
 #if 0
 struct AAA {
 };
@@ -14,8 +15,11 @@ struct AAA {
 // 3) 구조체의 크기는 멤버 변수의 총합과 일치하지 않을 수 있습니다.
 
 // * C 표준
-// - 구조체 내부에 이름없는 패딩이 포함될 수 있으며, 앞쪽에는 패딩이 존재하지 않습니다.
+// - 구조체 내부에 이름없는 패딩(접근이 불가능한)이 포함될 수 있으며, 앞쪽에는 패딩이 존재하지 않습니다.
+//   중간과 마지막에는 패딩이 존재할 수 있습니다.
+
 // - CPU가 구조체의 멤버에 접근하는 것을 효율적으로 수행하기 위해서 패딩이 필요합니다.
+
 // - 구조체의 패딩이 어떤 형태로 생성되는지, 미지정 동작입니다.
 //   => 컴파일러, 실행 환경에 따라 패딩이 달라질 수 있습니다.
 
@@ -62,7 +66,7 @@ int main(void)
 // #pragma pack(1)
 // MSVC
 #if 0
-#pragma pack(push, 1)
+#pragma pack(push, 1) // MSVC, GCC, clang
 struct user {
     char name[10];
     double height;
@@ -72,7 +76,6 @@ struct user {
 #pragma pack(pop)
 #endif
 
-// GCC
 #if 0
 struct user {
     char name[10];
@@ -80,6 +83,10 @@ struct user {
     int age;
     double weight;
 } __attribute__((packed));
+#endif
+
+// GCC
+#if 0
 
 struct AAA {
     int n;
@@ -114,13 +121,14 @@ int main(void)
 }
 #endif
 
-// #pragma pack(2)
+#pragma pack(2)
 
+#if 1
 struct AAA {
     int n;
     double d;
     char c;
-} __attribute__((packed, aligned(2)));
+}; // __attribute__((packed, aligned(2)));
 
 int main(void)
 {
@@ -128,3 +136,4 @@ int main(void)
 
     return 0;
 }
+#endif
