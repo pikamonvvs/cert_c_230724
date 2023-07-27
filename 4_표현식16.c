@@ -78,7 +78,9 @@ out:
 }
 #endif
 
-// 하나의 반복문 안에 2개 이상의 break / goto 문을 사용하면 안됩니다.
+// * 하나의 반복문 안에 2개 이상의 break / goto 문을 사용하면 안됩니다.
+// => 반복문에서 종료 횟수를 제한하는 것은 시각적인 코드의 복잡성을 최소화하는 도움이 됩니다.
+#if 0
 int main(void)
 {
     int state1 = 0;
@@ -95,6 +97,29 @@ int main(void)
         if (state2) {
             //...
             break;
+        }
+    }
+
+    return 0;
+}
+#endif
+
+int main(void)
+{
+    int state1 = 0;
+    int state2 = 42;
+
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; ++j) {
+            if (state1) {
+                // ..
+                break; /* 내부 루프의 break는 1개이므로 OK */
+            }
+        }
+
+        if (state2) {
+            //...
+            break; /* 외부 루프의 break 1개이므로 OK*/
         }
     }
 
