@@ -34,7 +34,7 @@ int main(void)
     int x[3] = { 10, 20, 30 };
     print_array(x, 3);
 
-    int y[2] = { 10, 20 };
+    int y[2] = { 10, 20 }; /* 미정의 동작 */
     print_array(y, 2);
 
     return 0;

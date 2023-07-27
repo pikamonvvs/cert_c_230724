@@ -22,12 +22,12 @@
 int main(void)
 {
     struct timeval tv;
-    unsigned long junk;
+    unsigned long junk; /* 초기화 되지 않은 변수의 값 - 미지정 동작 */
     printf("%lu\n", junk);
 
     gettimeofday(&tv, NULL);
 
-    srand(tv.tv_sec ^ tv.tv_usec ^ junk);
+    srand(tv.tv_sec ^ tv.tv_usec ^ junk); /* 초기화되지 않은 값을 사용 - 미정의 동작 */
     printf("%d\n", rand());
     printf("%d\n", rand());
     printf("%d\n", rand());
