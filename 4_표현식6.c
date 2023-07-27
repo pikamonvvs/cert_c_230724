@@ -12,11 +12,27 @@ struct s {
 // 구조체를 비교하는 함수를 만들고 싶습니다.
 //  - 문제점: 패딩도 비교의 대상으로 사용하고 있습니다.
 //          구조체 패딩이 어떤 값을 가지고 있는지는 미지정 사항입니다.
+//  - 해결 방법
+//   => 각 멤버를 비교하는 형태로 구현해야 합니다.
+#if 0
 int compare(const struct s* left, const struct s* right)
 {
     int result = 0;
     if (left != NULL && right != NULL) {
         result = memcmp(left, right, sizeof(struct s)) == 0;
+    }
+
+    return result;
+}
+#endif
+
+// 구조체 패딩의 영향을 받지 않도록,
+// 각 멤버를 기반으로 비교를 수행해야 합니다.
+int compare(const struct s* left, const struct s* right)
+{
+    int result = 0;
+    if (left != NULL && right != NULL) {
+        result = left->c == right->c && left->i == right->i && memcmp(left->buffer, right->buffer, sizeof(left->buffer)) == 0;
     }
 
     return result;
