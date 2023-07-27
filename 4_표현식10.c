@@ -64,11 +64,10 @@ int main(void)
 
     // 배열의 끝을 넘은 다음 요소를 주소로 가르키는 것은 허용됩니다. => past the end
     int* p3 = arr + 10;
+    // int* p4 = arr + 11; /* 미정의 동작 */
 
     print_array(arr, 10);
     print_array2(arr, arr + 10); // print_array2(std::begin(arr), std::end(arr));
-
-    // int* p4 = arr + 11; /* 미정의 동작 */
 
     return 0;
 }
