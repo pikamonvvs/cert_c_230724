@@ -60,7 +60,9 @@ struct X {
 };
 
 // 구조체를 값으로 반환하는 것은, 복사의 오버헤드가 있습니다.
+// => 사용자 정의 타입은 반환값을 전달하기 위해, 임시 수명을 가지는 메모리에 복사를 해서 전달을 수행합니다.
 // => Out Parameter
+
 struct X foo(void)
 {
     struct X result = { .a = { 1, 2, 3, 4, 5, 6 } };
@@ -73,6 +75,8 @@ void goo(struct X* result)
     int data[6] = { 1, 2, 3, 4, 5, 6 };
     memcpy(result->a, data, sizeof(result->a));
 }
+
+int add(int a, int b) { return a + b; } // 기본 타입은 임시 메모리의 복사로 반환이 전달되지 않습니다.
 
 int main(void)
 {
