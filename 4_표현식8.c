@@ -67,6 +67,7 @@ int main(void)
 }
 #endif
 
+#if 0
 // 비트 필드는 패딩이 존재할 수도 있고, 아닐수도 있습니다. => 미지정
 struct s {
     unsigned int m1 : 6;
@@ -98,3 +99,37 @@ int main(void)
 
     return 0;
 }
+#endif
+
+#if 1
+struct s {
+    int a;
+    double b;
+
+    // char flag; // 1바이트
+    char flag : 1;
+};
+
+// Linux Kernel - copy_to_user
+// => 커널 영역에서 유저 프로세스 영역으로 메모리를 복사할때 사용하는 함수
+int copy_to_user(void* dest, const void* src, size_t size) { return 0; }
+
+struct s user; // user 프로세스 영역에 존재하는 메모밀
+void f(void)
+{
+    struct s s;
+
+    memset(&s, 0, sizeof(struct s));
+
+    s.a = 1;
+    s.b = 3.14;
+
+    // 커널 영역의 스택 정보가 패딩을 통해 유저로 유출되는 문제
+    copy_to_user(&user, &s, sizeof(struct s));
+}
+
+int main(void)
+{
+    return 0;
+}
+#endif
