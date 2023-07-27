@@ -25,7 +25,12 @@ int compare(const struct s* left, const struct s* right)
 int main(void)
 {
     struct s s1 = { .c = 'A', .i = 42 };
-    struct s s2 = { .c = 'A', .i = 42 };
+    // struct s s2 = { .c = 'A', .i = 42 };
+
+    struct s s2;
+    s2.c = 'A';
+    s2.i = 42;
+    memset(s2.buffer, 0, sizeof(s2.buffer));
 
     int equal = compare(&s1, &s2);
     printf("equal: %d\n", equal);
