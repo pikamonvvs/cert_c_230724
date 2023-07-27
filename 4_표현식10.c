@@ -43,6 +43,8 @@ void print_array(int* arr, int n)
 }
 
 // C++ => 반개 구간
+// => 알고리즘 일반화 / 일반적 프로그래밍(Generic Programming)
+
 //  : [begin, end)
 void print_array2(int* begin, int* end)
 {
