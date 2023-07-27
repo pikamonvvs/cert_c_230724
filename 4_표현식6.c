@@ -26,6 +26,7 @@ int compare(const struct s* left, const struct s* right)
 }
 #endif
 
+#if 1
 // 구조체 패딩의 영향을 받지 않도록,
 // 각 멤버를 기반으로 비교를 수행해야 합니다.
 int compare(const struct s* left, const struct s* right)
@@ -37,6 +38,7 @@ int compare(const struct s* left, const struct s* right)
 
     return result;
 }
+#endif
 
 int main(void)
 {

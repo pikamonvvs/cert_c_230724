@@ -76,6 +76,7 @@ int main(void)
     // printf("%lu\n", (unsigned long)&(*(struct user*)0).link);
     // printf("%lu\n", (unsigned long)&((struct user*)0)->link);
     //  => C 표준에서 패딩을 고려한 구조체 멤버의 offset을 구하는 기능을 제공합니다.
+    //    stddef.h
     //   : offsetof
 
     printf("%lu\n", xoffsetof(struct user, link));
