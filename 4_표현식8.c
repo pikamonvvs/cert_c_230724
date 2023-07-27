@@ -12,7 +12,6 @@ struct s2 {
     int c;
 };
 
-
 struct s {
     unsigned int m1 : 8;
     unsigned int m2 : 8;
@@ -81,6 +80,7 @@ struct s {
 // (2)
 // |----- m1 -------||----m2----|
 // [1][1][1][1][1][1][2][2][2][2][x][x][x][x][x][x]
+//                          1  0
 
 int main(void)
 {
@@ -93,7 +93,7 @@ int main(void)
     ptr = (unsigned char*)&data;
     ++ptr;
 
-    *ptr += 1;
+    *ptr += 1; /* 미지정 동작 */
 
     printf("%d %d\n", data.m1, data.m2);
 
@@ -101,10 +101,10 @@ int main(void)
 }
 #endif
 
-#if 1
+#if 0
 struct s {
     int a;
-    double b;
+    char b;
 
     // char flag; // 1바이트
     char flag : 1;
@@ -119,10 +119,10 @@ void f(void)
 {
     struct s s;
 
-    memset(&s, 0, sizeof(struct s));
+    // memset(&s, 0, sizeof(struct s));
 
     s.a = 1;
-    s.b = 3.14;
+    s.b = 'A';
 
     // 커널 영역의 스택 정보가 패딩을 통해 유저로 유출되는 문제
     copy_to_user(&user, &s, sizeof(struct s));
