@@ -10,8 +10,8 @@ enum {
 // 아래 코드의 문제점은 무엇일까요?
 int main(void)
 {
-    int buf[BUF_SIZE];
-    int* cur;
+    char buf[BUF_SIZE];
+    char* cur;
 
     //-----
 #if 0
