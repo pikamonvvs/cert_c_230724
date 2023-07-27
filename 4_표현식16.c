@@ -57,6 +57,7 @@ int main(void)
 }
 #endif
 
+#if 0
 int main(void)
 {
     int n = 5;
@@ -72,6 +73,30 @@ int main(void)
         }
     }
 out:
+
+    return 0;
+}
+#endif
+
+// 하나의 반복문 안에 2개 이상의 break / goto 문을 사용하면 안됩니다.
+int main(void)
+{
+    int state1 = 0;
+    int state2 = 42;
+
+    for (int i = 0; i < 10; i++) {
+        if (state1) {
+            // ..
+            break;
+        }
+
+        // ...
+
+        if (state2) {
+            //...
+            break;
+        }
+    }
 
     return 0;
 }
