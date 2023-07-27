@@ -11,7 +11,10 @@
 void increment(int* pn)
 {
     // *pn++;
-    (*pn)++;
+    // (*pn)++;
+
+    // ++*pn;
+    ++(*pn); /* 우선순위 문제는 발생하지 않지만, 가독성을 위해서 괄호를 사용합니다. */
 }
 
 int main(void)
@@ -51,9 +54,9 @@ int main(void)
     // 결론: &&, || 연산자를 함께 사용할 경우, 괄호를 반드시 사용해서
     //      우선순위 문제가 발생하지 않도록 주의해야 합니다.
     a = b = c = d = 0;
-    d = ++a || b++ && ++c;
+    // d = ++a || b++ && ++c;
 
-    // d = ++a || (b++ && ++c);
+    d = ++a || (b++ && ++c);
     printf("%d %d %d %d\n", a, b, c, d); // 1 0 0 1
 
     int e = 0;
@@ -69,8 +72,10 @@ int main(void)
 }
 #endif
 
+#if 1
 void foo(int a, int b)
 {
+    printf("%d, %d\n", a, b);
 }
 
 int main(void)
@@ -83,9 +88,10 @@ int main(void)
     // a = (b = 10));
     // a = (10);
 
-    // 나열 연산자(, operator)
+    // 나열 연산자(Comma operator)
     // => 사용하지 않는 것이 좋습니다.
     foo(10, (20, 30));
 
     return 0;
 }
+#endif
