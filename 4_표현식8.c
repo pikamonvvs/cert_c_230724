@@ -5,13 +5,14 @@
 // : 구조체의 저장 효율을 향상시킬 수 있습니다.
 
 // 일반적인 멤버는 순차적으로 배치되는 것이 보장됩니다.
+#if 0
 struct s2 {
     int a;
     int b;
     int c;
 };
 
-#if 1
+
 struct s {
     unsigned int m1 : 8;
     unsigned int m2 : 8;
@@ -65,3 +66,35 @@ int main(void)
     return 0;
 }
 #endif
+
+// 비트 필드는 패딩이 존재할 수도 있고, 아닐수도 있습니다. => 미지정
+struct s {
+    unsigned int m1 : 6;
+    unsigned int m2 : 4;
+};
+
+// (1)
+// |----- m1 -------|       |----m2----|
+// [1][1][1][1][1][1][x][x] [2][2][2][2][x][x][x][x]
+
+// (2)
+// |----- m1 -------||----m2----|
+// [1][1][1][1][1][1][2][2][2][2][x][x][x][x][x][x]
+
+int main(void)
+{
+
+    struct s data;
+    data.m1 = 0;
+    data.m2 = 0;
+
+    unsigned char* ptr;
+    ptr = (unsigned char*)&data;
+    ++ptr;
+
+    *ptr += 1;
+
+    printf("%d %d\n", data.m1, data.m2);
+
+    return 0;
+}
