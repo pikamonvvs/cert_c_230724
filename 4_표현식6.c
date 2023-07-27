@@ -10,6 +10,8 @@ struct s {
 };
 
 // 구조체를 비교하는 함수를 만들고 싶습니다.
+//  - 문제점: 패딩도 비교의 대상으로 사용하고 있습니다.
+//          구조체 패딩이 어떤 값을 가지고 있는지는 미지정 사항입니다.
 int compare(const struct s* left, const struct s* right)
 {
     int result = 0;
