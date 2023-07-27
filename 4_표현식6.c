@@ -24,10 +24,10 @@ int compare(const struct s* left, const struct s* right)
 
 int main(void)
 {
-    struct s s1 = { .c = 'A', .i = 42 };
+    struct s s1 = { .c = 'A', .i = 42 }; // 패딩도 0으로 초기화됩니다.
     // struct s s2 = { .c = 'A', .i = 42 };
 
-    struct s s2;
+    struct s s2; // 패딩의 값은 알 수 없습니다.
     s2.c = 'A';
     s2.i = 42;
     memset(s2.buffer, 0, sizeof(s2.buffer));
