@@ -78,10 +78,10 @@ int main(void)
     b = 200U;
     result = a - b;
 
-    if (a > b) {
-        printf("result: %u\n", result);
-    } else {
+    if (a < b) {
         printf("Wrapping!\n");
+    } else {
+        printf("result: %u\n", result);
     }
 
     return 0;
