@@ -118,6 +118,7 @@ int main()
 }
 #endif
 
+#if 0
 struct s {
     signed int a : 8;
     signed int b : 8;
@@ -132,7 +133,7 @@ struct s {
     unsigned int h : 32;
 };
 
-int main(void)
+int main()
 {
     struct s data = { .a = 10, .b = 20, .c = 30, .d = 40 };
 
@@ -140,4 +141,13 @@ int main(void)
     PRINT_TYPE(data.c + data.d); // int
     PRINT_TYPE(data.e + data.f); // int
     PRINT_TYPE(data.g + data.h); // unsigned int
+}
+#endif
+
+int main()
+{
+    uint16_t a = 10;
+    uint16_t b = 20;
+
+    PRINT_TYPE(a + b);
 }
