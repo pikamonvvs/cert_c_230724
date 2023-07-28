@@ -84,5 +84,13 @@ int main(void)
         printf("result: %u\n", result);
     }
 
+    int error;
+    error = __builtin_usub_overflow(a, b, &result);
+    if (0 == error) {
+        printf("result: %d\n", result);
+    } else {
+        printf("Wrapping!\n");
+    }
+
     return 0;
 }
