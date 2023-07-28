@@ -27,6 +27,7 @@ int main(void)
 }
 #endif
 
+#if 0
 int main(void)
 {
     unsigned int a;
@@ -34,7 +35,7 @@ int main(void)
     unsigned int result;
 
     a = UINT_MAX;
-    b = 1;
+    b = 1U;
 
     result = a + b; /* OK! */
     // 방법 1. 연산의 결과가 정수 래핑이 발생했는지 확인합니다.
@@ -59,6 +60,26 @@ int main(void)
     error = __builtin_uadd_overflow(a, b, &result);
     if (0 == error) {
         printf("result: %d\n", result);
+    } else {
+        printf("Wrapping!\n");
+    }
+
+    return 0;
+}
+#endif
+
+int main(void)
+{
+    unsigned int a;
+    unsigned int b;
+    unsigned int result;
+
+    a = 100U;
+    b = 200U;
+    result = a - b;
+
+    if (a > b) {
+        printf("result: %u\n", result);
     } else {
         printf("Wrapping!\n");
     }
