@@ -121,6 +121,7 @@ int main(void)
 }
 #endif
 
+#if 0
 // GCC / Clang
 // => 컴파일러 내장 함수를 이용해서 안전하게 연산을 수행하는 방법을 제공합니다.
 // => "Arithmetic Overflow Checking Built-in Function"
@@ -159,4 +160,55 @@ int main(void)
     }
 
     return 0;
+}
+#endif
+
+#if 0
+int main(void)
+{
+    unsigned int a;
+    int b;
+    int result;
+
+    // a = INT_MAX;
+    // b = 1;
+
+    a = INT_MAX;
+    b = 1;
+
+    result = a + b;
+    printf("result: %d\n", result);
+    printf("result: %u\n", a + b);
+
+    return 0;
+}
+#endif
+
+#include <stdint.h>
+#include <inttypes.h>
+// PRId8 =>  %hhd
+// PRId16 => %hd
+// PRId32 => %d
+// PRId64 => %lld
+
+int main(void)
+{
+    int8_t a = 10;
+    int16_t b = 10;
+    int32_t c = 10;
+    int64_t d = 10;
+
+    // printf("%d\n", n); // 4바이트 부호 있는 정수를 출력 서식
+
+    // printf("%" PRId8 "\n", a);
+    printf("%hhd\n", a);
+
+    // printf("%" PRId16 "\n", b);
+    printf("%hd\n", b);
+
+    // printf("%" PRId32 "\n", c);
+    printf("%d\n", c);
+
+    // printf("%" PRId64 "\n", d);
+    printf("%lld\n", d);
 }
