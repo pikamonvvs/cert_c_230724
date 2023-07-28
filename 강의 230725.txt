@@ -1,0 +1,2157 @@
+MISRA가 너무 오랫동안 업데이트되지 않다가 새로 나왔는데
+
+2012에 비해 많은 변화가 있는 건 아니고,
+
+문법적인 부분들에 대해 C11에 대한 기준들이 생겼다 정도.
+
+시큐어 코딩이란
+
+C언어는 잘못 사용했을 때 발생할 수 있는 문제들이 많고
+
+그걸 잘 사용하기 위해 쓰는 것.
+
+C언어의 장점은
+
+1. 많은 프로세서에서 쉽게 사용할 수 있다.
+2. 효율적인 기계어를 생성할 수 있다.
+3. 국제표준기구(ISO)에 의해 정의된다.
+
+표준에 입각해서 작성한다면 플랫폼에 관계 없이 동일한 동작을 보장받을 수 있다.
+
+하지만 C언어는 표준 자체가 촘촘하게 작성되어있지 않다.
+
+미정의 동작들이 발생하지 않도록 코드를 짜야 한다.
+
+미지정 동작에는 쓰레기값도 있었다.
+
+Rust는 미지정 미정의 동작을 최대한 없앰
+
+컴파일러가 많이 관여하고
+
+가이드라인도 촘촘이 짬.
+
+삼중자는 옛날에 쓰던 기능임. 우리는 알 필요도 없지만
+
+?를 두 개 이상 붙여서 쓰는 행동은 지양해야 하고,
+
+최신 컴파일러는 삼중자가 비활성화되어있기 때문에
+
+C++에서는 제거하였지만 C에서는 레거시가 아직 많이 있어서 못뺐다고 한다.
+
+라인주석을 지양해야 한다. 역슬래시가 존재한다면
+
+그 다음줄도 주석처리된다.
+
+어제 잘못 설명한 부분이 있는데, enum이 런타임 상수라고 하셨나봄.
+
+런타임 상수 아니라고 하심.
+
+
+
+__COUNTER__ 라는 매크로가 있음.
+
+사용할 때마다 1씩 증가함.
+
+원래 표준은 아니고 여러 컴파일러에서 지원해주는 기능이었다가
+
+C11부터 표준으로 도입됨.
+
+__LINE__이 가진 단점은
+
+#define UNIQUE_NAME(prefix) CONCAT(a, __LINE__) 으로 정의할 경우
+
+int UNIQUE_NAME(a); int UNIQUE_NAME(a);
+
+라고 선언하면 이름 충돌이 나기 때문에
+
+__COUNTER__를 쓸 수 있다고 한다.
+
+
+
+플랫폼 의존적인 코드는 지양해야 한다.
+
+
+
+
+
+include guard를 작성하는 이유는
+
+헤더가 중복 포함되는 문제를 막기 위함.
+
+그래서 ifndef를 사용하는데
+
+===============
+#ifndef _COMPLEX_H_
+#define _COMPLEX_H_
+
+...
+
+#endif /*_COMPLEX_H_*/
+===============
+
+문제가 있다.
+
+예약어를 사용하고 있다.
+
+C/C++에서 예약어를 정의하고 있는 방법은
+
+1. 언더스코어(_)로 시작하고
+2. 두번째 문자가 대문자 혹은 언더스코어(_)로 시작하는 모든 식별자는 예약어다.
+3. _로 시작하는 모든 식별자는 파일 범위에서 일반 식별자와 태그 이름을 위해 예약된다.
+
+무슨 말이냐면
+
+_COMPLEX_H_ 라고 정의하면
+
+표준 라이브러리 헤더에서 정의하고 있는 또다른 매크로와
+
+이름 충돌이 날 가능성이 있다.
+
+이럴 경우 디버깅이 매우 어렵다.
+
+a.h가 표준 헤더라고 해보자.
+
+a.h에서 #ifndef _COMPLEX_H_ 를 쓰고 있는데
+
+내가 complex.h 파일을 만들어서 #ifndef _COMPLEX_H_ 를 쓰면 충돌이 난다.
+
+_로 시작하면 그렇다고 한다.
+
+그래서 #ifndef COMPLEX_H 라고 하거나
+
+PROJECT_UTILS_COMPLEX_H 형태로 쓴다고 한다.
+
+_COMPLEX_H_ 도 안되고 __COMPLEX_H__도 안된다
+
+int _global = 10; <- 허용 X
+void _foo(void) { } <- 허용 X
+struct _complex { }; <- 허용 X
+union _u { int a; }; <- 허용 X
+
+static도
+
+표준 라이브러리에 extern int _global 이란게 있으면
+
+내 파일에 static int _global 로 정의하면 충돌이 날 수 있음.
+
+다만 지역변수는 괜찮음.
+
+그리고 #pragma once 라는 키워드가 있다는데,
+
+대부분의 최신 컴파일러에서는 지원하지만 아직은 논쟁이 있어서
+
+표준은 아니라고 함.
+
+
+
+전처리기 마지막 예제
+
+가변인자 매크로
+
+C99 표준임.
+
+===================================
+#include <stdio.h>
+
+#define TRACE(...) fprintf(stderr, __VA_ARGS__)
+
+int main(void)
+{
+	TRACE("Hello\n");
+	int a = 42;
+	double d = 3.14;
+	TRACE("%d %lf\n", a, d);
+	return 0;
+}
+===================================
+
+가변인자 매크로 사용 시 주의할 점은
+
+#define TRACE(...) fprintf(stderr, "%s:%d", __FILE__, __LINE__, __VA_ARGS__)
+
+요런 의도로 만들고 싶다고 하자
+
+위 코드는 제대로 동작하지 않음. 인자가 제대로 전달이 안됨.
+
+그래서
+
+#define TRACE(fmt, ...) fprintf(stderr, "%s:%d> " fmt "\n", __FILE__, __LINE__, __VA_ARGS__)
+
+===================================
+#include <stdio.h>
+
+#define TRACE(fmt, ...) fprintf(stderr, "%s:%d> " fmt "\n", __FILE__, __LINE__, __VA_ARGS__)
+
+int main(void)
+{
+	int a = 42;
+	double d = 3.14;
+	TRACE("%d %lf", a, d);
+	return 0;
+}
+===================================
+
+이렇게 하면 된다.
+
+문제는 TRACE에 인자를 fmt만 넣으면 콤마때문에 컴파일 에러가 출력된다.
+
+==========
+#include <stdio.h>
+
+#define TRACE(fmt, ...) fprintf(stderr, "%s:%d> " fmt "\n", __FILE__, __LINE__, __VA_ARGS__)
+
+int main(void)
+{
+	TRACE("asd");
+	return 0;
+}
+==========
+
+
+
+또 하나 보자.
+
+=======================
+#include <stdio.h>
+
+void show(int n)
+{
+    printf("show: %d\n", n);
+}
+
+#define FE_1(FUNC, X) FUNC(X)
+
+#define FE_2(FUNC, X, ...) \
+    do { \
+        FUNC(X); \
+        FE_1(FUNC, __VA_ARGS__); \
+    } while(0)
+
+#define FE_3(FUNC, X, ...) \
+    do { \
+        FUNC(X); \
+        FE_2(FUNC, __VA_ARGS__); \
+    } while(0)
+
+#define FE_4(FUNC, X, ...) \
+    do { \
+        FUNC(X); \
+        FE_3(FUNC, __VA_ARGS__); \
+    } while(0)
+
+#define FE_5(FUNC, X, ...) \
+    do { \
+        FUNC(X); \
+        FE_4(FUNC, __VA_ARGS__); \
+    } while(0)
+
+int main(void)
+{
+	FE_1(show, 10);
+    printf("-------\n");
+	FE_2(show, 10, 20);
+    printf("-------\n");
+	FE_3(show, 10, 20, 30);
+    printf("-------\n");
+	FE_4(show, 10, 20, 30, 40);
+    printf("-------\n");
+	FE_5(show, 10, 20, 30, 40, 50);
+	return 0;
+}
+==============================
+
+요렇게 인자의 개수에 따라 매크로 함수를 만들 수 있다.
+
+이걸 좀더 편하데 FOREACH_N 라는 매크로 함수를 만들어서
+
+=========================
+#include <stdio.h>
+
+void show(int n)
+{
+    printf("show: %d\n", n);
+}
+
+#define FE_1(FUNC, X) FUNC(X)
+
+#define FE_2(FUNC, X, ...) \
+    do { \
+        FUNC(X); \
+        FE_1(FUNC, __VA_ARGS__); \
+    } while(0)
+
+#define FE_3(FUNC, X, ...) \
+    do { \
+        FUNC(X); \
+        FE_2(FUNC, __VA_ARGS__); \
+    } while(0)
+
+#define FE_4(FUNC, X, ...) \
+    do { \
+        FUNC(X); \
+        FE_3(FUNC, __VA_ARGS__); \
+    } while(0)
+
+#define FE_5(FUNC, X, ...) \
+    do { \
+        FUNC(X); \
+        FE_4(FUNC, __VA_ARGS__); \
+    } while(0)
+
+#define CONCAT_IMPL(a, b) a##b
+#define CONCAT(a, b) CONCAT_IMPL(a, b)
+
+#define FOREACH_N(N, FUNC, ...) CONCAT(FE_, N)(FUNC, __VA_ARGS__)
+
+int main(void)
+{
+    FOREACH_N(3, show, 10, 20, 30);
+    printf("-------\n");
+    FOREACH_N(5, show, 10, 20, 30, 40, 50);
+	return 0;
+}
+=============================
+
+이렇게 인자의 개수를 넣어주는 방식으로 구현할 수도 있다.
+
+더 편하게 인자의 개수를 자동으로 세어주도록 만들건데,
+
+===========================
+#include <stdio.h>
+
+void show(int n)
+{
+    printf("show: %d\n", n);
+}
+
+#define FE_1(FUNC, X) FUNC(X)
+
+#define FE_2(FUNC, X, ...) \
+    do { \
+        FUNC(X); \
+        FE_1(FUNC, __VA_ARGS__); \
+    } while(0)
+
+#define FE_3(FUNC, X, ...) \
+    do { \
+        FUNC(X); \
+        FE_2(FUNC, __VA_ARGS__); \
+    } while(0)
+
+#define FE_4(FUNC, X, ...) \
+    do { \
+        FUNC(X); \
+        FE_3(FUNC, __VA_ARGS__); \
+    } while(0)
+
+#define FE_5(FUNC, X, ...) \
+    do { \
+        FUNC(X); \
+        FE_4(FUNC, __VA_ARGS__); \
+    } while(0)
+
+#define CONCAT_IMPL(a, b) a##b
+#define CONCAT(a, b) CONCAT_IMPL(a, b)
+
+#define FOREACH_N(N, FUNC, ...) CONCAT(FE_, N)(FUNC, __VA_ARGS__)
+
+#define COUNT_IMPL(_1, _2, _3, _4, _5, N, ...) N
+#define COUNT(...) COUNT_IMPL(__VA_ARGS__, 5, 4, 3, 2, 1, 0)
+
+int main(void)
+{
+    int n;
+    n = COUNT(1, 2, 3);
+    printf("%d\n", n);
+    n = COUNT(1, 2, 3, 4, 5);
+    printf("%d\n", n);
+	return 0;
+}
+================================
+
+코드를 분석해보면
+
+COUNT(1, 2, 3)은 COUNT_IMPL(1, 2, 3, 5, 4, 3, 2, 1, 0) 으로 변환될거고,
+
+                           _1,_2,_3,_4,_5,[N]
+
+COUNT(1, 2, 3, 4, 5)는 COUNT_IMPL(1, 2, 3, 4, 5, 5, 4, 3, 2, 1, 0) 으로 변환될거고,
+
+                                 _1,_2,_3,_4,_5,[N]
+
+N 자리에 인자의 개수가 들어가는 것을 볼 수 있다.
+
+이런 재밌는 점을 응용하면
+
+===============
+#include <stdio.h>
+
+void show(int n)
+{
+    printf("show: %d\n", n);
+}
+
+#define FE_1(FUNC, X) FUNC(X)
+
+#define FE_2(FUNC, X, ...) \
+    do { \
+        FUNC(X); \
+        FE_1(FUNC, __VA_ARGS__); \
+    } while(0)
+
+#define FE_3(FUNC, X, ...) \
+    do { \
+        FUNC(X); \
+        FE_2(FUNC, __VA_ARGS__); \
+    } while(0)
+
+#define FE_4(FUNC, X, ...) \
+    do { \
+        FUNC(X); \
+        FE_3(FUNC, __VA_ARGS__); \
+    } while(0)
+
+#define FE_5(FUNC, X, ...) \
+    do { \
+        FUNC(X); \
+        FE_4(FUNC, __VA_ARGS__); \
+    } while(0)
+
+#define CONCAT_IMPL(a, b) a##b
+#define CONCAT(a, b) CONCAT_IMPL(a, b)
+
+#define FOREACH_N(N, FUNC, ...) CONCAT(FE_, N)(FUNC, __VA_ARGS__)
+#define FOREACH(FUNC, ...) FOREACH_N(COUNT(__VA_ARGS__), FUNC, __VA_ARGS__)
+
+#define COUNT_IMPL(_1, _2, _3, _4, _5, N, ...) N
+#define COUNT(...) COUNT_IMPL(__VA_ARGS__, 5, 4, 3, 2, 1, 0)
+
+int main(void)
+{
+    FOREACH(show, 1, 2, 3);
+    printf("-----------\n");
+    FOREACH(show, 1, 2, 3, 4, 5);
+	return 0;
+}
+===============
+
+요렇게 쓸 수 있다.
+
+
+
+C언어의 선언에 대해 알아보자.
+
+=======================
+#include <stdio.h>
+
+struct user {
+    char name[32];
+    int age;
+};
+
+void PrintUser(struct user user)
+{
+    printf("%s(%d)\n", user.name, user.age);
+}
+
+int main(void)
+{
+    struct user u1 = { .name = "Tom", .age = 42 };
+    PrintUser(u1);
+    return 0;
+}
+=========================
+
+구조체를 함수 인자로 넘겨줄 때는 call-by-value는 복사의 비용 때문에
+
+비효율적일 수 있다.
+
+그래서 대개 call-by-reference를 사용한다.
+
+===================
+#include <stdio.h>
+
+struct user {
+    char name[32];
+    int age;
+};
+
+void PrintUser(struct user *user)
+{
+    printf("%s(%d)\n", user->name, user->age);
+}
+
+int main(void)
+{
+    struct user u1 = { .name = "Tom", .age = 42 };
+    PrintUser(&u1);
+    return 0;
+}
+===================
+
+구조체를 call-by-reference로 함수에 전달할 때
+
+값을 변경하지 않는다면 "반드시 const"로 전달해야 한다. 적극 권장한다고 함.
+
+==========
+void PrintUser(const struct user *user)
+{
+    printf("%s(%d)\n", user->name, user->age);
+}
+==========
+
+불변성(Immutability)이라고 하는데,
+
+생성 이후에 값을 변경하지 않으면 어플리케이션의 정확성과
+
+안정성을 보장하는데 도움이 된다.
+
+장점은
+
+1. 동시성 프로그래밍에서 동기화 이슈가 발생하지 않는다.
+
+race condition이나 mutex에 대해 고려하지 않아도 된다.
+
+2. 참조 계수 등의 자원 공유 모델을 쉽게 구현할 수 있다.
+
+3. 변수의 값이 변경되는 경로를 쉽게 추적할 수 있다.
+
+값이 의도치 않게 변경될 경우, const가 아니라면 호출하는 모든 코드를 다 봐야 하지만,
+
+const는 선언부만 보면 된다.
+
+
+
+문자열 리터럴 선언 시
+
+char *s1 = "hello";
+
+문자열 리터럴은 읽기 전용 메모리에 할당된다.
+
+문자열 리터럴을 참조할 때는 반드시 const char*를 사용해야 한다.
+
+s1[0] = 'x';
+
+이런 건 미정의 동작이다.
+
+strchr 같은 함수도 반환 값이 const char*여서
+
+const char*로 받아야 하고, 값의 변경은 불가능하다.
+
+======================
+#include <stdio.h>
+#include <string.h>
+
+int main(void)
+{
+    // char *s1 = "hello";
+    const char *s1 = "hello";
+    //s1[0] = 'x';
+
+    // char *p = strchr(s1, 'e');
+    const char *p = strchr(s1, 'e');
+    if (p != NULL)
+    {
+        //*p = 'x';
+        printf("%c\n", *p);
+    }
+    return 0;
+}
+======================
+
+
+
+또 예제를 보자.
+
+=================
+#include <stdio.h>
+
+const int **ipp;
+int *ip;
+const int i = 42;
+
+int main(void)
+{
+    ipp = &ip;
+    *ipp = &i;
+
+    *ip = 100; // 미정의 동작
+
+    printf("end\n");
+
+    return 0;
+}
+=================
+
+선언부를 main 안으로 넣으면 정상 수행된다. (warning이 뜨지만.)
+
+ipp를 수정 가능하게 만들거나
+
+i ip를 const로 만들어야 한다.
+
+
+
+const가 붙은 위치에 따라 의미가 달라진다!!!
+
+상수성이 적용되는 위치가 달라짐.
+
+*의 앞에 있느냐 뒤에 있느냐에 따라 다름.
+
+const int *p1 = &n;
+int const *p2 = &n;
+
+ = n의 값을 변경할 수 없게 된다.
+
+int* const p3 = &n;
+
+ = p3의 값을 변경할 수 없게 된다.
+
+========
+#include <stdio.h>
+
+int main(void)
+{
+    int n = 10;
+    int x = 100;
+    const int *p1 = &n;
+    int const *p2 = &n;
+    int* const p3 = &n;
+
+    //*p1 = 100; // 에러
+    p2 = &x;
+    //*p2 = 100; // 에러
+    *p3 = 100;
+    //p3 = &x; // 에러
+
+    printf("end\n");
+
+    return 0;
+}
+========
+
+
+
+상수 리터럴을 직접 사용할 경우 가독성이 떨어진다.
+
+적절한 심볼릭 상수로 변경하여 사용하는 것이 좋다.
+
+C에서 심볼릭 상수를 만드는 방법은 3가지이다.
+
+1. const 상수
+
+얘는 런타임 상수라서
+
+배열 크기 초기화할 때는 못씀.
+
+==========
+int arr1[SRC_SIZE] = { 0, };
+int arr2[DEST_SIZE] = { 0, };
+==========
+
+switch의 case에서도 사용할 수 없다.
+
+===========
+switch (x)
+{
+	case SRC_SIZE: // 에러
+		break;
+}
+===========
+
+2. enum 상수
+
+근데 또 enum 안에서 상수 값 초기화할 때는 const 상수를 사용할 수 없음.
+
+============
+const int SRC_SIZE = 10;
+
+enum {
+    AAA = SRC_SIZE // 에러
+};
+============
+
+요런거.
+
+3. 매크로 상수
+
+
+근데 const는 C++에서는 "컴파일 상수"로 취급된다.
+
+그래서 C++에서는 위의 배열 초기화나 enum 초기화에서
+
+에러가 발생하지 않는다.
+
+
+
+컴파일 상수 vs 런타임 상수
+
+const가 C에선 런타임, C++에서는 컴파일 상수다.
+
+컴파일 타임 상수는 메모리로부터 값을 읽지 않고 컴파일 타임에 값을 결정한다.
+
+런타임 상수는 메모리로부터 로드한다.
+
+==========
+#include <stdio.h>
+
+int main(void)
+{
+    const int c1 = 42;
+    printf("%d\n", c1);
+    return 0;
+}
+=============
+
+위 코드를 C++로 컴파일해서 어셈을 까보면
+
+========
+main:
+	...
+        mov     esi, 42
+        mov     edi, OFFSET FLAT:.LC0
+        mov     eax, 0
+        call    printf
+        mov     eax, 0
+========
+
+42를 메모리에서 읽어오는 게 아닌 정적으로 박혀있음.
+
+= 컴파일 타임 상수다.
+
+===========
+main:
+	...
+        mov     eax, DWORD PTR [rbp-4]
+        mov     esi, eax
+        mov     edi, OFFSET FLAT:.LC0
+        mov     eax, 0
+        call    printf
+        mov     eax, 0
+===========
+
+C언어로 컴파일해서 까보면 메모리로부터 읽어온다.
+
+그리고 const의 또다른 특징은
+
+C에서는 external linkage, C++에서는 internal linkage를 가진다.
+
+그래서 C에서는 소스파일에 정의하고
+
+C++에서는 헤더파일에 정의한다.
+
+
+
+열거형 상수 enum은
+
+컴파일 시점에 평가되는 상수이다.
+
+상수 표현식으로 취급된다.
+
+오직 정수에 대해서만 사용할 수 있다.
+
+========
+#include <stdio.h>
+
+enum
+{
+    SRC_SIZE = 10,
+    DEST_SIZE = 11
+};
+
+int main(void)
+{
+    int arr1[SRC_SIZE];
+    int arr2[DEST_SIZE];
+
+    int x = 0;
+    switch (x)
+    {
+        case SRC_SIZE:
+            break;
+        case DEST_SIZE:
+            break;
+    }
+    return 0;
+}
+========
+
+그리고 매크로 상수는 앞에서 봤듯
+
+컴파일 시점에 상수로 치환되기 때문에
+
+상수 표현식에서 사용할 수 있다.
+
+타입의 제한도 없다.
+
+문제점은 전처리 이후에 심볼의 정보가 사라지기 때문에
+
+문제를 파악하기 어려울 수 있다.
+
+
+
+그래서 뭘 써야 하느냐?
+
+왕도는 없으니 상황에 따라 적절히 쓰면 된다.
+
+
+
+구조체의 크기는 플랫폼에 따라 달라질 수 있다.
+
+===========
+#include <stdio.h>
+
+struct packet {
+    unsigned char cmd;
+    int len;
+};
+
+int main(void)
+{
+    printf("size: %zu\n", sizeof(struct packet));
+    return 0;
+}
+============
+
+값이 8이 나온다.
+
+'패킷'처럼 데이터의 교환을 목적으로 사용할 경우,
+
+패딩을 제거하는 형태로 사용해야 한다.
+
+================
+#include <stdio.h>
+
+#pragma pack(1)
+
+struct packet {
+    unsigned char cmd;
+    int len;
+};
+
+#pragma pop()
+
+int main(void)
+{
+    printf("size: %zu\n", sizeof(struct packet));
+    return 0;
+}
+================
+
+#pragma pack(1)
+
+을 이용해서 구조체 alignment를 제거할 수 있다.
+
+pragme pack는 컴파일러 확장 명령이기 때문에 컴파일러마다 조금씩 다르다.
+
+===============
+#include <stdio.h>
+#include <assert.h>
+
+#pragma pack(1)
+
+struct packet {
+    unsigned char cmd;
+    int len;
+};
+
+#pragma pop()
+
+void process(struct packet* packet)
+{
+    assert(sizeof(struct packet) == 5);
+    printf("process\n");
+}
+
+int main(void)
+{
+    printf("size: %zu\n", sizeof(struct packet));
+    struct packet packet = { 0, };
+    process(&packet);
+    return 0;
+}
+===============
+
+위의 코드를 실행하면 크기가 5가 되어 process가 출력된다.
+
+
+
+assert(단언문)는 취약성이 있는 소프트웨어의 결함을 찾아서 제거하는데 사용되는
+
+효과적인 진단도구이다.
+
+조건이 성립되지 않을 경우 abort()를 통해 프로세스를 비정상 종료시킨다.
+
+어떤 동작을 수행시키기 전에
+
+먼저 만족되어야 하는 사전 조건이 만족되었는지를 체크하는데 쓰인다.
+
+
+우리가 비슷하게 만들어볼 수도 있겠는데
+
+=================
+#include <stdio.h>
+#include <stdlib.h>
+
+#define xassert(expr) \
+    do { \
+        if (!(expr)) { \
+            fprintf(stderr, "Assertion failed: %s\n", #expr); \
+            abort(); \
+        } \
+    } while(0)
+
+//#pragma pack(1)
+
+struct packet {
+    unsigned char cmd;
+    int len;
+};
+
+//#pragma pop()
+
+void process(struct packet* packet)
+{
+    xassert(sizeof(struct packet) == 5);
+    printf("process\n");
+}
+
+int main(void)
+{
+    printf("size: %zu\n", sizeof(struct packet));
+    struct packet packet = { 0, };
+    process(&packet);
+    return 0;
+}
+======================
+
+assert는 컴파일할 때 NDEBUG 매크로가 정의되어있지 않으면 아무 동작하지 않는다.
+
+컴파일 시에 -DNDEBUG 옵션을 붙여주어야 동작한다.
+
+
+
+중요한 건 assert는 abort를 호출하는데
+
+지속적으로 구동되어야 하는 서버나 임베디드 시스템에서는 사용하기 어렵다.
+
+뻗으면 안되니까.
+
+그럼 조건을 컴파일 타임에 체크할 수 있다면?
+
+static_assert 란 게 있다. 또는 _Static_assert 라고도 쓸 수 있다.
+
+함수를 돌리고 나서 진단하는 것이 아니라
+
+컴파일 타임에 체크한다.
+
+============
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+
+#ifndef NDEBUG
+#define xassert(expr) \
+    do { \
+        if (!(expr)) { \
+            fprintf(stderr, "Assertion failed: %s\n", #expr); \
+            abort(); \
+        } \
+    } while(0)
+#else
+#define xassert(expr) (void)0
+#endif
+
+//#pragma pack(1)
+
+struct packet {
+    unsigned char cmd;
+    int len;
+};
+
+//#pragma pop()
+
+void process(struct packet* packet)
+{
+    //assert(sizeof(struct packet) == 5);
+    static_assert(sizeof(struct packet) == 5, "Invalid size.");
+    _Static_assert(sizeof(struct packet) == 5, "Invalid size.");
+    printf("process\n");
+}
+
+int main(void)
+{
+    printf("size: %zu\n", sizeof(struct packet));
+    struct packet packet = { 0, };
+    process(&packet);
+    return 0;
+}
+============
+
+돌리면 static assertion failed 라는 컴파일 에러가 뜬다.
+
+물론 체크할 내용이 컴파일 시간에 체크할 수 있는 것이어야 한다.
+
+
+
+전처리기는 코드를 보지 않는다.
+
+#으로 시작하는 애들만 건드리고
+
+C언어 문법에 의한 건 전처리기가 모른다고 하는게 맞을 것 같다고 하심.
+
+
+
+static_assert도 직접 구현해서 쓸 수 있다.
+
+배열의 크기를 음수로 지정할 수 없는 특징을 이용해서 구현한다.
+
+==========
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+
+#define CONCAT_IMPL(a, b) a##b
+#define CONCAT(a, b) CONCAT_IMPL(a, b)
+
+#define STATIC_ASSERT(expr, message) \
+    char CONCAT(assertion_failed_at_line, __LINE__)[(expr) ? 1 : -1]
+
+int main(void)
+{
+    STATIC_ASSERT(sizeof(long) == 4, "long size must be 4");
+    return 0;
+}
+===========
+
+size of array is negative 라는 형태로 에러가 출력된다.
+
+이 코드는 조금 아쉬는 점이 있는데,
+
+1바이트짜리 캐릭터 배열을 꼭 만들어야 하기 때문인데,
+
+앞에 typedef를 붙이면 해결된다고 한다.
+
+========
+#define STATIC_ASSERT(expr, message) \
+    typedef char CONCAT(assertion_failed_at_line, __LINE__)[(expr) ? 1 : -1]
+========
+
+
+
+아래 코드의 문제점을 찾아보자.
+
+=============
+#include <stdio.h>
+
+enum {
+    ARRAY_SIZE = 10
+};
+
+void init_array(int **ptr_param)
+{
+    int arr[ARRAY_SIZE];
+
+    for (int i = 0; i < ARRAY_SIZE; i++)
+    {
+        arr[i] = i + 1;
+    }
+
+    *ptr_param = arr;
+}
+
+int main(void)
+{
+    int *ptr;
+    init_array(&ptr);
+
+    for (int i = 0; i < ARRAY_SIZE; i++)
+    {
+        printf("%d\n", ptr[i]);
+    }
+    return 0;
+}
+=============
+
+init_array 함수 수행이 끝나면 사라지는 배열에 값을 썼다.
+
+해결하는 방법은
+
+1. 정적 메모리를 쓴다.
+
+==============
+    static int arr[ARRAY_SIZE];
+==============
+
+당연히 해결되겠지만, 모든 영역에서 공유되기 때문에
+
+어디선가 변경하면 다른데서도 같이 변경됨.
+
+=================
+#include <stdio.h>
+
+enum {
+    ARRAY_SIZE = 10
+};
+
+void init_array(int **ptr_param)
+{
+    int arr[ARRAY_SIZE];
+
+    for (int i = 0; i < ARRAY_SIZE; i++)
+    {
+        arr[i] = i + 1;
+    }
+
+    *ptr_param = arr;
+}
+
+int main(void)
+{
+    int *ptr;
+    init_array(&ptr);
+
+    int *ptr2;
+    init_array(&ptr2);
+
+    ptr2[3] = 10000;
+
+    for (int i = 0; i < ARRAY_SIZE; i++)
+    {
+        printf("%d\n", ptr[i]);
+    }
+    return 0;
+}
+===============
+
+함수 재진입이 불가능하고 쓰레드 안정성이 없다.
+
+대표적인 재진입 불가능한 표준 라이브러리 함수가 strtok이다.
+
+
+
+2. 동적 메모리 할당
+
+하지만 malloc은 실패할 수 있다.
+
+메모리가 부족하면 NULL이 반환되기 때문에
+
+실패했는지 반드시 체크를 해야 한다.
+
+그리고 free하지 않으면 누수된다.
+
+별도의 함수에 의해 할당된 메모리는 누수의 위험성이 높다.
+
+그리고 성능적인 오버헤드가 있다.
+
+그래서 MISRA에서는 동적 메모리 할당을 사용하지 않는 것을 권장한다고 한다.
+
+strdup = 인자로 받은 문자열을 동적 메모리를 할당하여 복사하는 함수.
+
+그걸 strcpy로 복사해주는 대표적인 표준 라이브러리인데
+
+매뉴얼에 보면 strdup을 사용한 후에는
+
+꼭 free를 해주어야 한다고 되어있다.
+
+===============
+#include <stdio.h>
+#include <string.h>
+
+int main(void)
+{
+    char *s = strdup("Hello");
+    printf("%s\n", s);
+
+    free(s);
+
+    return 0;
+}
+===============
+
+그래서 핵심은
+
+C에서 함수를 설계할 때는
+
+주소를 결과로 반환하는 함수는 지양하고
+
+caller쪽에서 메모리를 제공하는 형태로 설계되어야 한다.
+
+===============
+#include <stdio.h>
+
+enum {
+    ARRAY_SIZE = 10
+};
+
+void init_array(int arr[ARRAY_SIZE])
+{
+    for (int i = 0; i < ARRAY_SIZE; i++)
+    {
+        arr[i] = i + 1;
+    }
+}
+
+int main(void)
+{
+    int arr[ARRAY_SIZE];
+    init_array(arr);
+
+    for (int i = 0; i < ARRAY_SIZE; i++)
+    {
+        printf("%d\n", arr[i]);
+    }
+    return 0;
+}
+===============
+
+
+
+아래 코드를 보자.
+
+======
+void init_array(int arr[ARRAY_SIZE])
+{
+	printf("%d\n", sizeof(arr));
+}
+======
+
+값은 8이 출력된다.
+
+함수에 배열을 인자로 전달하는 경우,
+
+포인터와 같이 배열의 첫 번째 원소의 시작 주소를 전달함.
+
+"배열의 이름은 배열의 첫번째 원소의 시작 주소이다"
+
+이를 Decay(부식)라고 말함.
+
+원래의 의미가 아닌 다른 의미로 해석된다는 뜻에서 붙여진 이름이라고 함.
+
+
+컴퓨터는 int *arr 로 인식함.
+
+int arr[ARRAY_SIZE] 로 전달하니까 40 아닌가? 하고 헷갈릴 수 있는데,
+
+8이다.
+
+그래서 전달할 때는 아예 int *arr 로 표기하는 것이 좋다.
+
+C++도 동일하다.
+
+
+
+많이들 헷갈려하는 게,
+
+=================
+#include <stdio.h>
+
+int main(void)
+{
+    int x[3] = { 1, 2, 3 };
+    
+    return 0;
+}
+=================
+
+여기서 x의 타입은 뭘까?
+
+C/C++에서 변수 타입을 구하는 방법은
+
+"식별자를 제외한 나머지" 가 타입이다.
+
+int *p; 면 int*이고
+
+int n; 이면 int 이듯
+
+정답은 int[3]이다.
+
+===============
+#include <stdio.h>
+
+int main(void)
+{
+    int x[3] = { 1, 2, 3 };
+    int *p;
+    printf("%zu\n", sizeof(x)); // 12
+    printf("%zu\n", sizeof(p)); // 8
+    return 0;
+}
+===============
+
+출력값은 12, 8이다.
+
+===========
+#include <stdio.h>
+
+int main(void)
+{
+    int x[3] = { 1, 2, 3 };
+    int *p = &x[0]; // Decay
+
+    printf("%zu\n", sizeof(p));
+    printf("%zu\n", sizeof(int*));
+
+    printf("%zu\n", sizeof(x));
+    printf("%zu\n", sizeof(int[3]));
+
+    return 0;
+}
+===========
+
+
+Decay의 예외가 있는데,
+
+1. sizeof. (int[3]의 크기가 12로 나왔듯.)
+2. & 연산자.
+
+아래 코드를 보자.
+
+p2 = &x;
+
+p2의 타입은 무엇이어야 할까?
+
+정답은 int (*p2)[3]; 이다.
+
+직관적으로는 int[3]* p2 = &x; 여야 할 것 같지만
+
+C언어 규칙 상 [3]를 뒤로 빼야 하는데
+
+int *p2[3] = &x;
+
+이러면 연산자 우선순위 때문에 *p2[3]가 *(p2[3]) 로 인식되기 때문에
+
+(*p2)[3] 이렇게 감싸줘야 한다고 한다.
+
+이를 배열포인터라고 함.
+
+접근은 이렇게 한다.
+
+(*p2)[0] = 100;
+(*p2)[1] = 200;
+(*p2)[2] = 300;
+
+
+
+질문
+
+int x[3][2]; 일 때
+
+x의 타입은?
+
+x 배열의 길이는?
+
+배열의 길이 구하는 팁 먼저 보자면
+
+============
+#include <stdio.h>
+
+int main(void)
+{
+    int arr[5];
+    printf("%lu\n", sizeof(arr) / sizeof(int));
+
+    return 0;
+}
+=============
+
+위 코드는 정상적이지만 
+============
+double arr[5];
+============
+
+이렇게 바꾸면 뒤에있는 sizeof(int)도 같이 바꿔줘야 한다.
+
+이 번거로움을 줄이려면 sizeof(arr[0]) 로 바꾸면 된다.
+
+
+
+int x[3][2]의 길이는 [int[2]][int[2]][int[2]]
+
+==========
+#include <stdio.h>
+
+void print_array(int (*x)[2], int n)
+{
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < 2; j++)
+        {
+            printf("%3d ", x[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int main(void)
+{
+    int x[3][2] = { { 1, 2 }, { 3, 4 }, { 5, 6 } };
+
+    printf("%lu\n", sizeof(x) / sizeof(x[0]));
+    print_array(x, 3);
+
+    return 0;
+}
+==========
+
+int[2] 타입의 원소가 3개이므로 길이는 3이다.
+
+
+
+함수 포인터
+
+=============
+#include <stdio.h>
+
+typedef int ARR3[3];
+
+ARR3* foo(void)
+{
+    static int x[3] = { 10, 20, 30 };
+    return &x;
+}
+
+int add(int a, int b) { return a + b; }
+
+typedef int (*FP)(int, int);
+
+FP goo(void)
+{
+    return &add;
+}
+
+int main(void)
+{
+    int (*p)[3] = foo();
+    printf("%d\n", (*p)[0]);
+    printf("%d\n", (*p)[1]);
+    printf("%d\n", (*p)[2]);
+    printf("-------\n");
+
+    int (*fp)(int, int) = goo();
+    printf("%d\n", fp(10, 20));
+
+    return 0;
+}
+=============
+
+자주 쓰는 거지만 예로 하나 다루어보았었음.
+
+
+
+선언 7번째 내용
+
+구조체를 반환하는 함수가 있다고 할 때,
+
+구조체가 크면 클수록 복사 오버헤드가 커진다.
+
+지역 변수를 쓰면 사라지는 메모리 참조에 대한 "미정의 동작" 이 발생하고
+
+정적 변수를 반환하면 재진입 불가능한 함수,
+
+동적 메모리 반환하면 누수, 할당 오버헤드
+
+그럼 어떻게?
+
+아웃 파라미터(Out Parameter)라는 방법을 이용함.
+
+"결과를 인자를 통해 전달한다."
+
+반환 타입이 구조체나 크기가 큰 사용자 정의 타입이라면
+
+인자를 통해 전달받는 게 좋다.
+
+==================
+#include <stdio.h>
+
+typedef struct
+{
+    int x, y;
+} point;
+
+void add(const point *a, const point *b, point *res)
+{
+    res->x = a->x + b->x;
+    res->y = a->y + b->y;
+}
+
+void print_point(const point *pt)
+{
+    printf("(%d, %d)\n", pt->x, pt->y);
+}
+
+int main(void)
+{
+    point p1 = { .x =  10, .y =  20 };
+    point p2 = { .x = 100, .y = 200 };
+
+    point res;
+    add(&p1, &p2, &res);
+    print_point(&res);
+    return 0;
+}
+==================
+
+원래 이런 형태로 많이 썼었는데,
+
+왜 써왔는지를 알고 가자고 하심.
+
+
+
+동일한 가시성을 가지는 식별자는
+
+타이포그라피적으로 이름이 모호하지 않아야 한다.
+
+===================
+#include <stdio.h>
+
+int main(void)
+{
+    int id_I;
+    int id_l;
+    int id_1;
+
+    int id_Z;
+    int id_2;
+
+    int id_0;
+    int id_O;
+
+    int id_8;
+    int id_B;
+
+    int id_m;
+    int id_rn;
+
+    return 0;
+}
+===================
+
+그리고 인자 없는 형태의 함수.
+
+============
+#include <stdio.h>
+
+void foo(void) {} // OK
+void goo() {}     // NO
+
+int main(void)
+{
+    foo(10);
+    goo(10);
+
+    return 0;
+}
+============
+
+여기서 foo는 컴파일 에러를 출력하지만
+
+goo는 컴파일 타임에 인자를 체크하지 않음.
+
+==========
+#include <stdio.h>
+
+void goo() {}
+
+int main(void)
+{
+    goo(10, 20, 30);
+
+    return 0;
+}
+==========
+
+함수의 인자가 선언된 것보다 더 적거나 더 많이 전달되는 것은
+
+"미정의 동작" 이기 때문에 컴파일 타임에 알려주지 않으므로 주의해야 한다.
+
+======================
+#include <stdio.h>
+
+void foo(void) {}
+
+int main(void)
+{
+    int (*fp1)(void) = &foo;
+    int (*fp2)() = &foo;
+
+    fp1(100, 200);
+    fp2(100, 200);
+
+    return 0;
+}
+======================
+
+fp1은 컴파일 에러로 걸러지지만 fp2는 걸러지지 않음.
+
+
+K&R Style 이라는 이름의 함수 정의 방법도 있음
+
+================
+#include <stdio.h>
+
+void foo(void) {}
+
+int sub(a, b)
+int a, b;
+{
+    return a - b;
+}
+
+int main(void)
+{
+    sub(1, 1);
+    return 0;
+}
+================
+
+이것도 가능한데, 너무 옛날거라 C23부터는 아예 없어졌고,
+
+원래 몰랐으니 안쓰면 됨.
+
+goo()는 인자가 없다가 아닌 인자를 명시하지 않겠다는 뜻이기 때문에
+
+void를 명시하는 형태로 쓰는 것이 바람직하다.
+
+
+int add(int, int);
+int add(int a, int b); 중에
+
+int add(int a, int b); 가 MISRA에서 권고하는 방법이다.
+
+
+미즈라는 스트레스.
+
+자동차 CERT-C.
+
+AUTOSAR에도 쓰인다고.
+
+자동차쪽이 이런게 심하다고 함.
+
+
+
+아래처럼 하면 더 좋은 거 아니냐고 질문이 옴.
+
+============
+void add(const point* const a, const point* const b, point* const res)
+{
+    res->x = a->x + b->x;
+    res->y = a->y + b->y;
+}
+============
+
+그렇긴 하지만 이렇게까지 쓰진 않는다고 함.
+
+C에서 파라미터는 지역변수와 동일한데
+
+애초에 함수 안에서 전달받은 값을 변경하는 건
+
+MISRA에서도 위반행위라고 나와있고,
+
+내가 따로 지역변수로 받아서 수정하는 건 몰라도
+
+오만때만데 다 const가 붙을 수 있어서 너무 strict해진다.
+
+C가 아닌 다른 언어에서는 파라미터를 대부분 immutable로 간주한다고 함.
+
+
+
+==================
+#include <stdio.h>
+
+void divide(int divided, int divisor, int* result)
+{
+    *result = divided / divisor;
+}
+
+int main(void)
+{
+    int data;
+    divide(10, 4, &data);
+    printf("%d\n", data);
+    return 0;
+}
+==================
+
+이 코드의 문제점은 만약 divide(10, 0, NULL); 처럼
+
+divide에 0이 전달되거나 NULL이 전달되어서
+
+미정의 동작이 발생할 수 있음.
+
+=======================
+#include <stdio.h>
+
+void divide(int divided, int divisor, int* result)
+{
+    if (divisor != 0 && result != NULL)
+    {
+        *result = divided / divisor;
+    }
+}
+
+int main(void)
+{
+    int data;
+    divide(10, 0, NULL);
+    printf("%d\n", data);
+    return 0;
+}
+========================
+
+하나 더 보자면
+
+====================
+#include <stdio.h>
+
+int divide(int divided, int divisor, int* result)
+{
+    int error = 0;
+    if (divisor == 0)
+    {
+        error = -100;
+    }
+    else if(result != NULL)
+    {
+        error = -200;
+    }
+    else
+    {
+        *result = divided / divisor;
+    }
+    return error;
+}
+
+int main(void)
+{
+    int data = 0;
+    int error = divide(10, 0, &data);
+    if (error == 0)
+    {
+        printf("%d\n", data);
+    }
+    else
+    {
+        printf("error: %d\n", error);
+    }
+    return 0;
+}
+====================
+
+divide의 함수 반환값을 성공 여부로 활용할 수 있음.
+
+중요한건 divide의 return이 한 군데인데,
+
+MISRA에 함수 반환처는 한 곳이어야 한다는 규칙이 있다.
+
+return을 여러 군데 쓰면 안된다고 한다.
+
+
+그리고 또 문제점이 있다.
+
+함수가 결과를 반환하는지 오류를 반환하는지 구분하기 어렵다는 문제가 있다.
+
+이걸 해결하는 방법은 함수의 반환 타입을 에러 타입으로 사용하는 것이 좋다.
+
+에러 코드도 매직넘버가 아닌 심볼릭 상수를 사용하는 것이 좋다.
+
+==============
+#include <stdio.h>
+
+typedef int error_t;
+
+enum
+{
+    DIVISION_BY_ZERO = -100,
+    INVALID_POINTER = -200
+};
+
+error_t divide(int divided, int divisor, int* result)
+{
+    error_t error = 0;
+    if (divisor == 0)
+    {
+        error = DIVISION_BY_ZERO;
+    }
+    else if(result != NULL)
+    {
+        error = INVALID_POINTER;
+    }
+    else
+    {
+        *result = divided / divisor;
+    }
+    return error;
+}
+
+int main(void)
+{
+    int data = 0;
+    error_t error = divide(10, 0, &data);
+    if (error == 0)
+    {
+        printf("%d\n", data);
+    }
+    else
+    {
+        printf("error: %d\n", error);
+    }
+    return 0;
+}
+==============
+
+이렇게 error_t라는 걸 만들어서 명시하는 게 좋다.
+
+
+
+아래 코드를 보자.
+
+=============
+#include <stdio.h>
+
+int main(void)
+{
+    FILE* fp = fopen("a.txt", "r");
+    if (fp == NULL)
+    {
+        fprintf(stderr, "fopen() error\n");
+        return 1;
+    }
+    return 0;
+}
+=============
+
+fopen에 실패하는 경우가 여러 가지 있을 수 있다.
+
+파일이 없을 수도 있고 디렉토리 접근 권한이 없을 수도 있고 등등.
+
+그걸 알려주는 기능인 errno란 게 있다고 한다.
+
+근데 errno는 숫자인데 직관적으로 무슨 에러인지 사용자가 알기 어렵기 때문에
+
+에러 원인을 문자열 형태로 뽑을 수 있다고 함.
+
+===================
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+
+int main(void)
+{
+    FILE* fp = fopen("a.txt", "r");
+    if (fp == NULL)
+    {
+        perror("fopen() error");
+        return 1;
+    }
+    return 0;
+}
+===================
+
+근데 이것도 불편하다고 함.
+
+
+
+MSVC에 보면 SDL 검사라는 게 있다.
+
+_CRT_SECURE_NO_WARNINGS 어쩌고
+
+strcpy 대신 strcpy_s를 쓰라고
+
+..._s 시리즈의 함수들이 많이 있는데,
+
+이는 C11의 Annex K 확장 라이브러리이고,
+
+표준에 도입이 되었지만 강제되진 않고,
+
+오직 MSVC에서만 지원하고 있기 때문에
+
+
+
+여담인데 C 표준 위원회가 있고 C++ 표준 위원회가 있으면
+
+C 표준 위원회 사람은 그렇게 적극적인 사람들이 잘 없다고 함.
+
+Microsoft 사람들이 적극적으로 밀어붙여서 _s 함수가 표준으로 들어갔다고 하는데
+
+_s도 미정의 동작의 가능성이 존재하기 때문에
+
+무조건 좋다고 할 수는 없다.
+
+다만 Out Parameter를 이용하여 인자로 전달하고
+
+반환값을 errno로 쓰는 건 좋은 방법이다.
+
+
+
+질문, errno 사용이 MISRA에 위배되는 건 아닌지?
+
+errno를 사용하지 말라기보단 errno을 사용할 때 몇가지 사항을 주의하라는
+
+내용처럼 보인다고 하심.
+
+errno를 반환하는 함수를 호출하기 전에 변수를 0으로 초기화해놔야 한다는 거랑
+
+errno 확인은 함수 호출 직후에 해야 한다는 거랑. 등등.
+
+C 표준 문서는 구글에 치면 나온다고 함. 근데 지루하고 어렵게 되어있어서
+
+키워드만 검색해서 stackoverflow에 검색해서 찾아본다고 하심.
+
+C 표준 문서눈 무료고 MISRA가 유료라고 함. 문서 바뀔 때마다 돈을 받아먹는다고..
+
+
+
+재진입이 불가능한 함수들
+
+재진입이 불가능한 이유는 내부적으로 정적 변수나 정적 메모리에 의존하고 있을 경우.
+
+표준 라이브러리에는 대표적으로 strtok, rand, gmtime, asctime 등이 있다.
+
+구분하는 방법은
+
+재진입이 가능한 버전으로 _r 함수가 같이 제공됨.
+
+manpage에 봤을 때 같이 제공되고 있으면 재진입이 불가능한 함수구나 알 수 있다고 함.
+
+(r은 reentrance version을 뜻함.)
+
+_r 함수는 표준이 아님. 유닉스 계열에서만 쓸 수 있다.
+
+재진입이 불가능, 그래서 스레드 안정성을 보장할 수 없는데,
+
+보장할 수 있는 방법이 있음.
+
+윈도우에서는 Thread Local Storage(TLS) (혹은 Thread Specific Storage TSS)라는 개념을 써서 구현해놓았기 때문에
+
+안정성을 보장한다고 한다. 다만 같은 컨텍스트 안에서는 보장 X.
+
+리눅스에서는 그냥 보장 안됨.
+
+
+
+가변인자
+
+가변인자를 쓰기 위해서는 세 가지 특징이 있다.
+
+1. C++에서는 제약이 없는데, C에서는 반드시 고정인자가 1개 이상 있어야 한다.
+
+2. 그리고 함수를 정의할 때, 함수 설계자와 사용자간의 [암묵적인 계약]을 정의해야 한다.
+
+계약을 통해 전달된 인자의 수를 결정할 수 있다.
+
+stdarg.h를 이용하여 가변인자 함수를 만들 수있다.
+
+1. va_start
+2. va_arg
+3. va_end
+
+va_start는 초기화, va_end는 정리,
+
+va_arg를 이용해서 인자를 얻어올 수 있다.
+
+3. 가변 인자를 통해 전달되는 인자의 타입을 함수는 모른다.
+
+그래서 이것도 암묵적인 계약이 필요하다.
+
+(printf의 경우 %c, %d, %s 등으로 타입을 알려주는 등.)
+
+
+구현 방법
+
+1. 마지막 인자로 VA_END를 전달하는 방법 (EOF)
+
+====================
+#include <stdio.h>
+#include <stdarg.h>
+
+enum {
+    VA_END = -1,
+};
+
+int average(int first, ...)
+{
+    int sum = 0;
+    int cnt = 0;
+
+    va_list ap;
+    va_start(ap, first); // 초기화
+    
+    int i = first;
+    while (i != VA_END)
+    {
+        sum += i;
+        ++cnt;
+
+        i = va_arg(ap, int); // 
+    }
+    va_end(ap);
+
+    return (cnt != 0) ? sum / cnt : 0;
+}
+
+int main(void)
+{
+    int result;
+    result = average(1, 2, 3, VA_END);
+    printf("%d\n", result);
+    result = average(1, 2, 3, 4, VA_END);
+    printf("%d\n", result);
+    result = average(1, 2, 3, 4, 5, VA_END);
+    printf("%d\n", result);
+    return 0;
+}
+====================
+
+2. 인자의 개수를 명시적으로 전달하는 방법
+
+==============
+#include <stdio.h>
+#include <stdarg.h>
+
+enum {
+    VA_END = -1,
+};
+
+int average(int cnt, ...)
+{
+    if (cnt <= 0)
+    {
+        return 0;
+    }
+
+    int sum = 0;
+
+    va_list ap;
+    va_start(ap, cnt);
+    
+    for (int i = 0; i < cnt; i++)
+    {
+        sum += va_arg(ap, int);
+    }
+
+    va_end(ap);
+
+    return sum / cnt;
+}
+
+int main(void)
+{
+    int result;
+    result = average(3, 1, 2, 3);
+    printf("%d\n", result);
+    result = average(4, 1, 2, 3, 4);
+    printf("%d\n", result);
+    result = average(5, 1, 2, 3, 4, 5);
+    printf("%d\n", result);
+    return 0;
+}
+==============
+
+3. 여기서 아까 배운 COUNT 매크로 함수를 이용하여 인자의 개수를
+
+자동으로 처리하면
+
+===================
+#include <stdio.h>
+#include <stdarg.h>
+
+enum {
+    VA_END = -1,
+};
+
+int average(int cnt, ...)
+{
+    if (cnt <= 0)
+    {
+        return 0;
+    }
+
+    int sum = 0;
+
+    va_list ap;
+    va_start(ap, cnt);
+    
+    for (int i = 0; i < cnt; i++)
+    {
+        sum += va_arg(ap, int);
+    }
+
+    va_end(ap);
+
+    return sum / cnt;
+}
+
+#define COUNT_IMPL(_1, _2, _3, _4, _5, N, ...) N
+#define COUNT(...) COUNT_IMPL(__VA_ARGS__, 5, 4, 3, 2, 1, 0)
+#define AVERAGE(...) average(COUNT(__VA_ARGS__), __VA_ARGS__);
+
+int main(void)
+{
+    int result;
+    result = AVERAGE(1, 2, 3);
+    printf("%d\n", result);
+    result = AVERAGE(1, 2, 3, 4);
+    printf("%d\n", result);
+    result = AVERAGE(1, 2, 3, 4, 5);
+    printf("%d\n", result);
+    return 0;
+}
+===================
+
+이렇게 만들 수 있다.
+
+
+
+가변인자 함수의 문제점
+
+1. 암묵적인 계약이 잘 지켜지지 않으면 미정의 동작이 발생할 수 있다.
+
+2. 가변 인자로 전달되는 인자의 타입을 컴파일 타임에 체크할 수 없다.
+
+CERT-C에서는 가변 인자 함수는 모든 계약이 안전하게 지켜지는지
+
+반드시 주의해야 한다고 되어있음. (조심해라)
+
+MISRA에서는 stdarg.h에 있는 기능은 사용하지 말라고 되어있음. (쓰지마라)
+
+표준 라이브러리의 기능은 사용할 수 있지만, 새로운 가변 인자 함수를 만들지
+
+마라고 되어있음.
+
+
+
+가변인자의 메커니즘과 문제점을 설명하기 위해 짠 코드라
+
+크게 중요하진 않은데,
+
+또 막상 보다보면 어렵진 않음.
+
+로그 출력할 때나 이럴 때 유용하긴 함.
+
+잘못된 타입 전달이나 이럴 때 미정의 동작이 발생할 수 있으니
+
+주의해서 쓰거나 쓰지 마라는 내용.
+
+
+
+참고.
+
+C17 표준 문서: https://files.lhmouse.com/standards/ISO%20C%20N2176.pdf
+
+데브독스: https://devdocs.io/c/
+
+
+
+
+
+
+
+
+잠깐 딴생각 한거.
+
+세계 최고가 될 수 없기 때문에 포기하는 것보단
+
+내가 세계 최고인 척 혼자 착각하면서 찔끔찔끔씩이라도 하는 게 낫다.
+
+
+

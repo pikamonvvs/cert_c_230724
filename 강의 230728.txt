@@ -1,0 +1,1571 @@
+어제 내용 복습
+
+패딩
+
+memcmp을 이용해서 구조체를 비교하는 코드를 짰었는데,
+
+구조체는 초기화 방법에 따라 패딩을 0으로 초기화할 수도 있고 안할 수도 있다.
+
+그래서 패딩 영역이 항상 0일 거라고 가정하면 안된다.
+
+memcmp는 패딩까지도 비교하기 때문에 멤버값이 동일해도 다르다고 결과가 나올 수 있다.
+
+
+연결리스트도 배웠다.
+
+멤버들끼리 연결해놓고
+
+멤버의 오프셋을 이용해 노드의 시작 주소를 구하는 방법을 배웠다.
+
+주소의 연산과 참조의 연산이 만나면 서로 상쇄된다.
+
+offsetof(s, m)를 이용해 s 구조체의 m 멤버의 오프셋 위치를 구할 수 있고,
+
+container_of(cur, s, m)를 이용해 노드를 순회하면서 노드의 시작 주소를 구할 수 있다.
+
+리눅스 커널이나 시스템 프로그래밍 등 오픈소스 코드에 보면
+
+요런 애들을 많이 사용했음.
+
+
+비트 필드 구조체의 멤버 배치는
+
+컴파일러 구현에 따라 다르므로
+
+멤버 사이에 패딩이 존재할 수도 있고 안존재할 수도 있다.
+
+그래서 아래 코드와 같이
+
+struct s user = { 0, };
+struct s* ptr = &user;
+*ptr += 1;
+
+*ptr += 1과 같은 코드는 미지정 동작이 된다.
+
+
+copy_to_user 로 복사해올 때
+
+레지스터의 상위 비트가 노출된다거나
+
+하는 문제가 있었다고 함.
+
+
+포인터 산술 연산에 주의해야 한다고 배웠다.
+
+struct big* s = ...;
+size_t size = offsetof(...);
+
+memset(s + skip, ...);
+
+이러면 오프셋만큼 이동하는 게 아니라 포인터 연산에 의해 8바이트가 곱해진 만큼 이동한다.
+
+이를 막기 위해 (char*)로 캐스팅해준다.
+
+void*로 해도 1바이트 연산으로 바꿔주긴 하지만 이는 GNU Extension이고 표준은 아니어서
+
+char*로 캐스팅하는 게 더 바람직하다.
+
+
+Decay에 대해 배웠다.
+
+
+포인터 산술 연산에 대해 배웠다.
+
+*(arr - 1)은 가능하지만 arr[-1]는 불가능하다.
+
+그리고 포인터 + 포인터 연산은 허용되지 않는 연산이다.
+
+포인터 - 포인터 연산은 허용되지만 반드시 같은 배열 영역을 참조하는 포인터들로 사용해야 한다.
+
+포인터 간의 상대적 위치를 파악하는 형태로.
+
+-padentic 옵션으로 표준이 아닌 부분은 경고를 띄우게 할 수 있다.
+
+
+함수 인자 전달 시, 인자에다가 ++, --같은 부수연산을 수행하지 않는 것이 좋다.
+
+미지정 동작 때문에.
+
+함수 인자 안에서 expression을 쓰는 것도 별로 좋지 않다.
+
+
+옛날에는 세 줄짜리 코드 한 줄로 줄여쓰면 마냥 좋은 건줄 알았는데
+
+다 틀린 거였다.
+
+
+f1 함수와 f2 함수의 +, -, *, /, % 산술 연산 시
+
+f1와 f2의 수행 순서는 미지정 동작임.
+
+단 &&과 ||, ?: 요런 애들은 f1부터 수행됨이 표준에서 보장됨.
+
+요런 코드들은 써도 되지만 쓰지 말자는 내용이었음.
+
+
+dangling else에 대해서도 배웠음.
+
+else가 어느 if에 붙어야 할지 모호해질 수 있기 때문에
+
+중괄호를 항상 써주는 게 좋다.
+
+Go언어는 중괄호를 안쓰면 에러가 발생한다.
+
+
+goto는 MISRA에서는 제한적으로 사용을 허용한다.
+
+현재 위치 이후에 나오는 라벨로만 점프해야 한다.
+
+다시 위로 돌아가는 형태의 점프는 쓰면 안된다.
+
+==================
+if () {
+    goto label;
+}
+
+if () {
+label:
+}
+==================
+
+요런 형태의 goto도 안된다.
+
+다중 for문을 빠져나올 때 goto가 유용하다.
+
+반복문 안에 break나 goto가 두 개 이상 있으면 안된다. 코드 동작 파악이 어렵다.
+
+Early-exit 구문은 MISRA에서는 허용되지 않는다. 항상 단일 종료 지점을 가져야 한다.
+
+이게 논쟁이 엄청 많다.
+
+early exit가 코드를 더 깔끔하게 한다는 주장도 있고, 동작 파악을 어렵게 한다는 주장도 있다.
+
+MISRA C++2023x 더이상 당신의 할아버지의 
+
+C언어는 언어의 변화가 별로 없다.
+
+하지만 C++은 언어적 표준이 너무 많이 바껴써
+
+지금은 C++23이 나왔는데 현업에서는 끽해봐야 C++14,17을 쓰고 있다.
+
+MISRA C++ 2008이랑 AUTOSAR랑 상충되는 게 너무 많았다고 한다.
+
+그래서 조율 중이고, 202x를 만들고 있다고 한다.
+
+single exit, dynamic memory 등
+
+
+
+MISRA 준수 여부 체크하는 도구들은 많이 있다. 무료 툴도 있고.
+
+cppcheck 같은 것도 있고 MISRA 라이센스를 정식으로 구매해서 적용한 거라고 함.
+
+
+
+타입
+
+타입인 정확히 이해하는 게 조금 어렵긴 하다.
+
+일단은 사용하는 아키텍처에 따라 데이터 모델이 다를 수 있고
+
+데이터 모델은 할당되는 메모리 크기를 결정하는데
+
+"아키텍처와 컴파일러의 종류에 따라 기본 크기가 다르다."
+
+C 표준에서 정의하고 있는 타입의 크기는 "char는 1바이트다." 외엔 없다.
+
+즉 char 이외에는 크기가 다 달라질 수 있다.
+
+그래서 표준 타입을 바로 사용하면 안된다.
+
+stdint.h 헤더에서 정의하는 타입 정의를 이용하는 것이 좋다.
+
+stdint는 C99 표준에서 도입되었다.
+
+====================
+#include <stdio.h>
+#include <stdint.h>
+
+int main(void)
+{
+    int8_t a;
+    int16_t b;
+
+    uint8_t c;
+    uint16_t d;
+
+    return 0;
+}
+====================
+
+MISRA는 이를 반드시 사용하도록 되어있다.
+
+int_least16_t e; // 플랫폼에서 지원하는 최소 16비트의 부호있는 정수타입
+int fast32_t f;  // 플랫폼에서 지원하는 가장 빠른 타입 중 32비트 부호있는 정수타입
+
+이런 것도 있다.
+
+잘 쓰진 않고,
+
+보통 int8_t, uint16_t 등의 형태를 많이 쓴다.
+
+단, 부동 소수점 타입에 대해서는 제공되지 않는다.
+
+이는 typedef를 이용해 직접 정의해야 한다.
+
+====================
+typedef float float32_t;
+typedef double float64_t;
+====================
+
+질문. stdint 안에는 어떻게 구현되어 있나?
+
+조건부 컴파일에 의해 플랫폼에 상관 없이 동일한 크기를 갖도록 만들어져 있다.
+
+
+실수는 표준으로 제공하는 건 맞지 않다고 판단했다고 함.
+
+부동 소수점은 32비트냐 64비트냐가 중요한 게 아니라
+
+내부에 지수부 가수부가 플랫폼에 따라 달라질 수 밖에 없고,
+
+그 부분을 명확하게 표현하는 방법으로 제공되기에는 적합하지 않다고 판단해서
+
+표준으로 받아들여지지 않았다. (즉 실수를 이렇게 표현하는 게 맞냐에 대한 논쟁.)
+
+그래서 필요 시에는 사용자가 정의해서 써야 한다.
+
+다만 MISRA는 실수 타입도 요렇게 정의해서 써야 한다고 하고 있다고 함.
+
+실제로 그렇게 쓰고 있기도 하고.
+
+잘 찾아보면 float도 이미 만들어놓은 게 있을 수도 있다고 함.
+
+그리고 long double이란 게 있음. 얘는 진짜 플랫폼에 따라 크기가 다르다.
+
+컴파일러마다 8 또는 16이 나옴.
+
+
+
+타입 2번째
+
+C언어의 정수 타입에는 char, short, int, long, long long 5가지가 있다.
+
+엄밀히 따지면 char는 정수 타입이라기 보단 문자 타입이다. 1바이트의 정수 타입이기도 하다.
+
+부호 있는 타입은 signed를 생략해도 된다.
+
+문제는 char 타입을 그냥 쓰면 "미지정 동작"이다.
+
+char는 앞에 signed 혹은 unsigned를 붙이지 않으면 signed인지 unsigned인지 미지정 동작이다.
+
+char를 stdint를 이용해 쓴다고 하면 문제 없다.
+
+하지만 부호 있는 정수 타입으로 쓴다면 "반드시 signed"를 붙여서 써야 한다고 한다!
+
+즉 정리하면
+
+- signed char, unsigned char
+- short, unsigned short
+- int, unsigned int
+- long, unsigned long
+- long long, unsigned long long
+
+이렇다.
+
+엄밀히 따지면 char는 타입이 3개인 셈임. char, signed char, unsigned char.
+
+강사님이 char가 컴파일러/실행환경에 따라 달라진 적이 있다고 하심.
+
+char를 arm 컴파일러에서 돌렸더니 unsigned로 처리됐었다고 함.
+
+
+
+타입 캐스팅에는 암묵적인 캐스팅이 있고 명시적인 캐스팅이 있다.
+
+암묵적인(implicit) 캐스팅은 서로 다른 타입임에도 캐스팅 연산자 없이 변환이 수행된다.
+
+명시적인(explicit) 캐스팅은 개발자가 캐스팅 연산자를 통해 타입을 변환한다.
+
+명시적인 캐스팅은 괜찮은데
+
+암묵적인 캐스팅은 수행될 경우 잘못된 연산으로 인해 데이터가 손실되거나
+
+잘못 해석되는 문제가 발생할 수 있다.
+
+부호있는 정수에서는 오버플로우, 이는 미정의 동작임.
+
+의도하고 오버플로우는 내는 것도 문제다.
+
+
+오른쪽 시프트 연산
+
+산술 시프트(부호 있는 정수) : 밀린 공간이 부호 비트(MSB)로 채워짐
+논리 시프트(부호 없는 정수) : 밀린 공간이 0으로 채워짐
+
+아래 코드를 보자.
+
+====================
+#include <stdio.h>
+#include <stdint.h>
+
+int main(void)
+{
+    uint8_t port = 0x5a;
+    uint8_t result = (~port) >> 4;
+
+    printf("%x\n", result);
+
+    return 0;
+}
+====================
+
+얘는 왜 fa가 출력될까?
+
+정수 프로모션
+
+int 타입보다 작은 타입은
+
+연산 수행 시 int 또는 unsigned int 타입으로 암묵적인 변환이 수행된다.
+
+uint8_t은 int보다 작은 타입이기 때문에
+
+promotion이 발생한다.
+
+port는 연산이 수행될 때 int로 표현 가능하니까
+
+int 또는 unsigned int로 변환되는데
+
+보통은 int로 변환된다고? (정확히 언제 int로, 언제 unsigned int로 변환되는지는 찾는 게 어렵다고 하심.)
+
+
+
+0x5a  = 0000.... 0101 1010
+~0x5a = 1111.... 1010 0101
+>> 4  = 1111.... 1111 1010 = 0xfa.
+
+이건 컴파일러 특성이 아니고 아예 언어적인 특성이다.
+
+이걸 해결하려면 어떻게 해야 할까?
+
+uint8_t result = (uint8_t)(~port) >> 4;
+
+이렇게 명시적인 캐스팅을 해주면 된다.
+
+해결 방법:
+
+0x5a      = 0000.... 0101 1010
+~0x5a     = 1111.... 1010 0101
+(uint8_t) = 1010 0101
+promotion = 0000.... 1010 0101
+>> 4      = 0000.... 1111 1010 = 0x0a.
+
+int로 변환해서 수행을 한다.
+
+
+보충 설명을 하자면
+
+(uint8_t)(~port >> 4) 이거랑
+
+(uint8_t)(~port) >> 4 이거랑
+
+다르다.
+
+~port를 1바이트로 자른 다음
+
+>> 4 을 수행하면서 다시 int로 프로모팅시킨 다음 계산을 하는데
+
+이 때 MSB가 0으로 설정되면서 0으로 시프트되는 것 같다.
+
+
+
+타입 3번째
+
+정수 변환 규칙
+
+1. 정수 타입 순위(rank)
+
+long long > long > int > short > signed char
+
+unsigned long long > unsigned long > unsigned int > unsigned short > unsigned char
+
+2. 산술 변환 규칙
+
+산술 연산을 수행하기 전에 피연산자의 타입을 변환하고 연산이 수행된다.
+
+1) 같은 타입이면 변환하지 않는다.
+
+예외) 프로모션: int보다 작은 타입의 경우 프로모션 후 수행된다.
+
+==============
+#include <stdio.h>
+
+int main(void)
+{
+    int8_t c1 = 100;
+    int8_t c2 = 200;
+    printf("%d\n", c1 + c2); // promotion => int
+
+    int a = 100;
+    int b = 200;
+    printf("%d\n", a + b); // int
+
+    long la = 100L;
+    long lb = 200L;
+    printf("%ld\n", la + lb); // long
+
+    return 0;
+}
+==============
+
+2) 두 개의 피연산자가 정수 타입이면 범위가 큰 타입으로 변환된다.
+
+===================
+#include <stdio.h>
+
+int main(void)
+{
+    int a = 10;
+    long la = 100L;
+
+    printf("%ld\n", a + la); // long
+
+    long lb = 10000L;
+    long long llb = 2000000LL;
+    printf("%ld\n", lb + llb); // long long
+    return 0;
+}
+===================
+
+3) 부호 없는 정수 타입의 피연산자가 다른 피연산자의 순위보다 크거나 같은 경우
+
+부호 있는 정수 타입의 피연산자는 부호 없는 정수 타입으로 변환된다.
+
+위에 썼던
+
+long long > long > int > short > signed char
+
+unsigned long long > unsigned long > unsigned int > unsigned short > unsigned char
+
+무슨 뜻이냐면 signed와 unsigned를 더하는데
+
+둘다 int면
+
+unsigned가 우선시 된다는 뜻이다.
+
+즉 더한 값은 unsigned int로 변환된다는 뜻이다.
+
+================
+#include <stdio.h>
+
+int main(void)
+{
+    unsigned int a = 10U;
+    int b = -100;
+    printf("%u\n", a + b); // unsigned int
+
+    unsigned long a1 = 10U;
+    int b1 = 100;
+    printf("%lu\n", a1 + b1); // unsigned long
+
+    return 0;
+}
+================
+
+4) 이게 실수를 많이 하는 부분 중에 하나인데,
+
+부호 있는 정수 타입의 피연산자가 부호 없는 타입의 모든 값을 표현할 수 있는 경우
+
+부호 없는 정수 타입의 피연산자는 부호 있는 정수 타입으로 변환된다.
+
+무슨 말이냐면
+
+long long과 unsigned int를 더한다.
+
+unsigned가 signed보다 우선이지만
+
+long long이 int보다 우선이다.
+
+이 경우는 머가 우선?
+
+===============
+#include <stdio.h>
+
+int main(void)
+{
+    long long a = 10LL;
+    unsigned int b = 100U;
+    printf("%lld\n", a + b); // long long
+
+    return 0;
+}
+===============
+
+long long이 unsigned int가 가질 수 있는 숫자 범위를 모두 커버하므로
+
+long long으로 변환된다.
+
+사실 위에 3번이랑 동일한 내용임.
+
+5) 부호 있는 정수 타입의 피연산자가 부호 없는 타입의 모든 값을 표현할 수 없는 경우
+
+부호 있는 정수 타입의 피연산자가 동일 타입의 부호 없는 타입으로
+
+두 피연산자가 모두 변환된다.
+
+무슨 말이냐면
+
+(리눅스 환경이어서 두 타입이 모두 8바이트라고 가정하자.)
+
+long long과 unsigned long를 더할 때,
+
+===============
+#include <stdio.h>
+
+int main(void)
+{
+    long long lla = 10LL;
+    unsigned long ulb = 100L;
+    printf("%lld\n", lla + ulb); // unsigned long long
+
+    return 0;
+}
+===============
+
+결과의 타입은 unsigned long long이다.
+
+
+
+부호가 있는 것과 없는 것을 비교하는 행위는
+
+웬만하면 없도록 해야 하고,
+
+부호 있는 변수가 음수인지를 체크해야 한다.
+
+=============
+#include <stdio.h>
+#include <limits.h>
+
+int main(void)
+{
+    int si = -1;
+    unsigned int ui = 1;
+
+    printf("%u\n", (unsigned int)si);
+
+    if (si < ui)
+    {
+        printf("si가 작습니다.\n");
+    }
+    else
+    {
+        printf("si가 작습니다.\n");
+    }
+
+    if (si < 0 || si < ui)
+    {
+        printf("si가 작습니다.\n");
+    }
+    else
+    {
+        printf("si가 작습니다.\n");
+    }
+
+    return 0;
+}
+=============
+
+
+
+타입 4번째
+
+char 타입은 문자 타입니다. 정수로 사용할 때 signed/unsigned을 안쓰면 미지정 사항이다.
+
+char 문자 타입
+
+char : 문자 타입
+signed char : 부호 있는 8비트 정수 타입
+unsigned char : 부호 없는 8비트 정수 타입
+
+이 세 개는 서로 구분되는 타입으로 간주해야 한다.
+
+signed char str1[] = "Hello";
+unsigned char str1[] = "Hello";
+
+이런 코드는 말도 안된다.
+
+char n = 42;
+
+이 코드도 가급적이면 쓰지 말자. 미지정 동작이다.
+
+char를 8비트 정수 타입으로 쓰고 싶으면 반드시 부호(signed, unsigned) 키워드를 명시해야 한다.
+
+signed char n2 = 42;
+unsigned char n3 = 42;
+
+요렇게.
+
+
+
+타입 5번째
+
+비트 필드 구조체는 정수 멤버가 signed인지 unsigned인지 미지정 동작이다.
+
+============
+struct s
+{
+    int a : 8;
+    int b : 8;
+};
+============
+
+컴파일러 구현에 따라 다르다.
+
+위 코드는 잘못된 코드다.
+
+============
+struct s
+{
+    signed int a : 8;
+    signed int b : 8;
+
+    unsigned int c : 8;
+    unsigned int d : 8;
+
+    unsigned int e : 31;
+    unsigned int f : 31;
+
+    unsigned int g : 32;
+    unsigned int h : 32;
+};
+============
+
+이게 맞다.
+
+비트 필드 구조체를 쓸 때는 정수 타입은 항상 unsigned나 signed를 써줘야 한다.
+
+
+
+그리고 예를 들면
+
+unsigned int e : 31 처럼
+
+필드 크기가 int 크기보다 작은 경우 int로 승격된다.
+
+unsigned int e : 32 처럼
+
+필드 너비가 int와 동일한 경우에는 unsigned int가 된다.
+
+이건 사실 프로모션이라고 보기도 애매함. 32비트 unsigned int가 unsigned int지.
+
+============
+struct s
+{
+    signed int a : 8;
+    signed int b : 8;
+
+    unsigned int c : 8;
+    unsigned int d : 8;
+
+    unsigned int e : 31;
+    unsigned int f : 31;
+
+    unsigned int g : 32;
+    unsigned int h : 32;
+};
+
+int main(void)
+{
+    struct s data = { .a = 10, .b = 10, .c = 10, .d = 10 };
+    // data.a + data.b => int;
+    // data.c + data.d => int;
+    // data.e + data.f => int;
+    // data.g + data.h => unsigned int;
+}
+============
+
+이렇게.
+
+
+
+타입 6번째
+
+부호 있는 정수의 연산은 오버플로우의 가능성이 있다.
+
+그리고 오버플로우는 미정의 동작이다.
+
+============
+#include <stdio.h>
+#include <limits.h>
+
+int main(void)
+{
+    int a;
+    int b;
+
+    a = INT_MAX;
+    b = 1;
+
+    long long result = a + b;
+    printf("result: %lld\n", result);
+
+    return 0;
+}
+============
+
+돌려보면 오버플로우가 발생한다.
+
+a + b 에서 오버플로우가 발생한다.
+
+long long이 더 큰 값을 담을 수 있다고 해도
+
+a + b에서 이미 int로 계산하기 때문에
+
+오버플로우가 발생한다.
+
+그러므로 이런 오버플로우가 발생하지 않도록 주의해야 한다.
+
+============
+#include <stdio.h>
+#include <limits.h>
+
+int main(void)
+{
+    int a;
+    int b;
+
+    a = INT_MAX;
+    b = 1;
+
+    long long result;
+
+    result = (long long)a + b; // OK
+    result = a + (long long)b; // OK
+    result = (long long)(a + b); // 이건 안된다.
+
+    printf("result: %lld\n", result);
+
+    return 0;
+}
+============
+
+부호 있는 애들에 대해 설명하는 중임.
+
+부호 없는 애들은 오버플로우라고 하지 않는다고 함.
+
+오버플로우, 언더플로우 둘다 합쳐서 그냥 오버플로우라고 설명함.
+
+============================
+int a = INT_MIN;
+int b = -1;
+int result;
+if ((a > 0 && b > 0) && (a > (INT_MAX - b))) {
+    printf("Overflow\n"); // 양수일 때
+} else if ((a < 0 && b < 0) && (a < INT_MIN - b))) {
+    printf("Underflow\n"); // 음수일 때
+} else {
+    result = a + b;
+    printf("result: %d\n", result);
+}
+============================
+
+이렇게 오버/언더플로우를 체크하도록 방어적으로 짤 수도 있다고 함.
+
+
+위 코드들은 덧셈 뺄셈이고
+
+곱셈은 오버플로우를 체크하는 코드가 더 복잡하다.
+
+==================
+#include <stdio.h>
+#include <limits.h>
+
+int main(void)
+{
+    int a = INT_MAX;
+    int b = 2;
+
+    int result = a * b;
+    printf("result: %d\n", result);
+
+    int is_overflow = 0;
+    if (a > 0) {
+        if (b > 0) {
+            if (b != 0 && a > (INT_MAX / b))
+            {
+                is_overflow = 1;
+            }
+        }
+        else
+        {
+            if (a != 0 && a > (INT_MAX / a))
+            {
+                is_overflow = 1;
+            }
+        }
+    }
+    else
+    {
+        if (b > 0)
+        {
+            if (b != 0 && a < (INT_MIN / b))
+            {
+                is_overflow = 1;
+            }
+        }
+        else
+        {
+            if (a != 0 && a < (INT_MIN / a))
+            {
+                is_overflow = 1;
+            }
+        }
+    }
+
+    if (is_overflow) {
+        result = a * b;
+        printf("result: %d\n", result);
+    }
+
+    return 0;
+}
+==================
+
+오버플로우를 체크하는 빌트인 함수가 gcc랑 clang에 포함되어있다.
+
+===================
+#include <stdio.h>
+#include <limits.h>
+
+int main(void)
+{
+    int a = INT_MAX;
+    int b = 2;
+    int result;
+    int error;
+
+    a = INT_MAX;
+    b = 1;
+    error = __builtin_add_overflow(a, b, &result);
+    (error == 1) ? printf("overflow\n") : printf("result: %d\n", result);
+
+    a = INT_MIN;
+    b = 1;
+    error = __builtin_sub_overflow(a, b, &result);
+    (error == 1) ? printf("overflow\n") : printf("result: %d\n", result);
+
+    a = INT_MAX;
+    b = 2;
+    error = __builtin_mul_overflow(a, b, &result);
+    (error == 1) ? printf("overflow\n") : printf("result: %d\n", result);
+
+    return 0;
+}
+===================
+
+이런 기능이 있지만 표준은 아니고,
+
+그래서 사용하기 껄끄럽다면 직접 만들어서 쓰거나 해야 한다.
+
+msvc는 열심히 찾아봤지만 없는 것 같다고 하심.
+
+
+
+%d는 4바이트 부호 있는 정수를 출력할 때 쓰는 서식임.
+
+타입이랑 부호 유무에 따라 사용하는 서식이 다 다름.
+
+================
+#include <stdio.h>
+#include <limits.h>
+#include <inttypes.h>
+// PRId8 => %hhd
+// PRId16 => %hd
+// PRId32 => %d
+// PRId64 => %lld
+
+int main(void)
+{
+    int8_t a = 10;
+    int16_t b = 10;
+    int32_t c = 10;
+    int64_t d = 10;
+
+    printf("%" PRId8 "\n", a);
+    printf("%hhd\n", a);
+    printf("%" PRId16 "\n", b);
+    printf("%hd\n", a);
+    printf("%" PRId32 "\n", c);
+    printf("%d\n", a);
+    printf("%" PRId64 "\n", d);
+    printf("%lld\n", a);
+
+    return 0;
+}
+================.
+
+요런 것도 있다고 함.
+
+
+
+타입 7번째
+
+=====================
+#include <stdio.h>
+#include <limits.h>
+
+int main(void)
+{
+    unsigned int a = UINT_MAX;
+    int b = 1;
+    printf("%u\n", a + b);
+
+    return 0;
+}
+=====================
+
+이거 오버플로우 아닌가욧!?
+
+아니다.
+
+부호 없는 피연산자를 포함하는 계산은
+
+오버플로우가 발생하지 않는다.
+
+unsigned 결과값이 저장되는 정수 타입으로 표현될 수 없는 경우
+
+나머지 연산을 통해 값을 줄여서 "wrap arround" 라고 한다.
+
+즉 부호없는 피연산자는 오버플로우가 아닌 래핑이라고 한다.
+
+=> 정수 래핑.
+
+이건 C 표준에서 이렇게 되도록 정의한 거다.
+
+부호 있는 정수의 overflow는 미정의 동작이지만
+
+부호 없는 정수의 wrapping은 미정의 동작이 아니다.
+
+단 정수 래핑은 논리적 오류의 원인이 될 수 있으므로 사용 시 주의해야 한다.
+
+
+그래서 래핑은 발생 여부를 체크하는 방법이 조금 다르다.
+
+첫번째는 간단함.
+
+====================
+#include <stdio.h>
+#include <limits.h>
+
+int main(void)
+{
+    unsigned int a;
+    unsigned int b;
+    unsigned int result;
+    a = UINT_MAX;
+    b = 1;
+    result = a + b; // OK
+
+    if (result < a)
+    {
+        printf("Wrapping!\n");
+    }
+    else
+    {
+        printf("result: %d\n", result);
+    }
+
+    return 0;
+}
+====================
+
+보안적으로도 아무 문제가 없다.
+
+위처럼 연산 결과가 래핑이 발생 했는지도 체크할 수 있고,
+
+아래처럼 래핑이 발생할 가능성이 있는지 미리 체크하는 것도 가능하다.
+
+=============
+#include <stdio.h>
+#include <limits.h>
+
+int main(void)
+{
+    unsigned int a;
+    unsigned int b;
+    unsigned int result;
+    a = UINT_MAX;
+    b = 1;
+    result = a + b; // OK
+
+    if (a > UINT_MAX - b)
+    {
+        printf("Wrapping2!\n");
+    }
+    else
+    {
+        printf("result: %d\n", result);
+    }
+
+    return 0;
+}
+=============
+
+그리고 또 하나는 GCC 내장 함수를 이용해서도 체크할 수 있다.
+
+===========
+#include <stdio.h>
+#include <limits.h>
+
+int main(void)
+{
+    unsigned int a;
+    unsigned int b;
+    unsigned int result;
+    a = UINT_MAX;
+    b = 1;
+    result = a + b; // OK
+
+    int error = __builtin_uadd_overflow(a, b, &result);
+    error == 0 ? printf("result: %d\n", result) : printf("Wrapping!\n");
+
+    return 0;
+}
+===========
+
+뺄셈도 아래처럼 체크할 수 있다.
+
+================
+#include <stdio.h>
+#include <limits.h>
+
+int main(void)
+{
+    unsigned int a;
+    unsigned int b;
+    unsigned int result;
+    a = 100U;
+    b = 200U;
+    result = a - b;
+
+    if (a < b)
+    {
+        printf("Wrapping!\n");
+    }
+    else
+    {
+        printf("result: %d\n", result);
+    }
+
+    int error = __builtin_usub_overflow(a, b, &result);
+    error == 0 ? printf("result: %d\n", result) : printf("Wrapping!\n");
+
+    return 0;
+}
+================
+
+
+
+타입 8번째
+
+신뢰할 수 없는 소스로부터의 데이터는
+
+항상 체크를 해야 한다.
+
+==============
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_TABLE_SIZE 10
+
+int main(int argc, char** argv)
+{
+    if (argc != 2)
+    {
+        fprintf(stderr, "./a.out [table_size]\n");
+        return 1;
+    }
+
+    int table_size = atoi(argv[1]);
+
+    if (table_size <= MAX_TABLE_SIZE && table_size >= MIN_TABLE_SIZE)
+    {
+        int* table = malloc(sizeof(int) * table_size);
+        if (table != NULL)
+        {
+            // ...
+        }
+    }
+    else
+    {
+        printf("Invalid data.\n");
+    }
+
+    int* table = malloc(sizeof(int) * table_size);
+    if (table != NULL)
+    {
+
+    }
+
+    return 0;
+}
+==============
+
+scanf도 문제가 많은 함수다.
+
+1. 정수의 서식에 대한 입력에서 오류를 제대로 처리하지 못하는 문제가 있다.
+
+2. 정수
+
+숫자랑 문자를 합쳐서 주거나 (42sdjifoskd)
+
+숫자를 엄청 길게 주면 (1234894021385490234)
+
+제대로 인식을 못한다.
+
+문자열 버퍼로 받아서 변환해서 쓰는 것도
+
+정의한 버퍼의 크기를 넘어서면 소용없다.
+
+그래서 버퍼의 길이를 지정할 수 있는 표준함수인 fgets를 쓴다.
+
+문제는 atoi도 문제가 있다.
+
+그래서 atoi 계열의 함수는 사용하지 말아야 한다.
+
+1. 정수와 문자가 섞여있는 데이터에서
+
+정수만을 변환하는 형태로 잘못된 데이터를 감지하지 못한다.
+
+2. 잘못된 결과와 0을 구분할 수 없다. = 미정의 동작.
+
+보안 관점에서 잘못 만들어진 함수라고 함.
+
+그래서 strtol 계열의 함수를 사용해야 한다.
+
+strtol
+strtoll => C99부터 제공
+strtoul
+strtoull => C99부터 제공
+
+strtol 계열의 함수는 오류가 발생하였을 경우 errno를 통해 원인을 파악할 수 있다.
+
+end_ptr의 역할은
+
+문자열을 정수로 변환하면서
+
+문자열의 어느 지점까지 사용했는지
+
+위치를 가리키는 목적으로 사용된다.
+
+==================
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+
+int main(void)
+{
+    char buf[32] = "[1,22,333,4444,55555]";
+    // fgets(buf, sizeof(buf), stdin);
+    char *ptr = strtok(buf, "[],");
+    char* end_ptr;
+    while (ptr)
+    {
+        printf("%s\n", ptr);
+        int temp = strtol(ptr, &end_ptr, 10);
+        printf("%d\n", temp);
+        ptr = strtok(NULL, "[],");
+    }
+    return 0;
+}
+==================
+
+
+
+==============
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+
+int main(void)
+{
+    char buf[32];
+
+    errno = 0;
+    fgets(buf, sizeof(buf), stdin);
+    if (errno == 0)
+    {
+        char* end_ptr;
+        long data;
+
+        errno = 0;
+        data = strtol(buf, &end_ptr, 10);
+        if (errno == ERANGE) // 표현 범위를 넘어선 문자열이 전달될 경우
+        {
+            perror("aaa");
+        }
+        else if (errno == EINVAL) // 잘못된 데이터가 전달된 경우
+        {
+            perror("aaa");  
+        }
+        else if (*end_ptr != '\0' && *end_ptr != '\n') // 잘못된 문자열이 존재
+        {
+            printf("aaa");
+        }
+        else
+        {
+            printf("%ld\n", data);
+        }
+    }
+    else
+    {
+        perror("aaa");
+    }
+
+    return 0;
+}
+==============
+
+MISRA에서 못쓰게 하는 표준 함수들
+
+1. atoi 계열 함수들
+
+2. exit, abort ... 등 종료 함수들
+
+3. qsort, bsearch - 얘네는 재귀적으로 구현될 가능성이 있어서
+
+스택이 작은 임베디드 시스템에서는 미정의 동작이 우려된다.
+
+strrchr는 C++에서는 쓰면 워닝이 뜬다. C에서는 사용해도 된다.
+
+C++에서는 C에서 제공하는 문자열 계열 함수들을 쓰면 워닝이 뜬다고 함.
+
+
+
+타입 9번째 (마지막 시간)
+
+===============
+#include <stdio.h>
+
+int insert(int index, int* list, int size, int value)
+{
+    int ret = -1;
+    if (size != 0)
+    {
+        index = (index + 1) & size;
+
+        list[index] = value;
+        ret = index;
+    }
+    return ret;
+}
+
+int main(void)
+{
+    return 0;
+}
+===============
+
+위 insert 함수의 문제점은
+
+1. index + 1 연산에서 Overflow 미정의 동작의 가능성이 있다.
+
+2. 음수가 전달될 경우, 결과로 음수가 나오고,
+
+유효하지 않은 메모리에 대한 접근으로 미정의 동작이 발생할 수 있다.
+
+정수 나누기 / 나머지
+
+1. C99 이전에는 음수 피연산자에 대한 나누기, 나머지 연산의 부호가 미지정 동작이었다.
+
+C99 표준 이후로 아래처럼 정의되었다.
+
+- 나눗셈 연산의 결과는 첫번째 피연산자를 두번째 피연산자로 나눈 몫이다.
+
+나머지 연산의 결과는 나머지다.
+
+두 연산에서 두 번째 값이 0인 경우 미정의 동작이 발생한다.
+
+정수가 나누어질 때, 나누기 연산의 결과는 수학적인 몫으로 소수점 이하는 버려진다.
+
+결과의 부호는 첫번째 피연산자의 부호를 따릅니다.
+
+A/B * B + (A%B) => A가 되는 것이 보장된다. (원래는 안됐다고 함.)
+
+해결 방법.
+
+1. 경계 체크를 해야 한다.
+
+==================
+#include <stdio.h>
+#include <limits.h>
+
+int insert(int index, int* list, int size, int value)
+{
+    int ret = -1;
+    if (size != 0 && (index >= 0 && index < size))
+    {
+        index = (index + 1) & size;
+
+        list[index] = value;
+        ret = index;
+    }
+    return ret;
+}
+
+int main(void)
+{
+    int data[32] = { 0, };
+    int ret;
+
+    // ret = insert(INT_MAX, data, sizeof(data), 42);
+    ret = insert(-42, data, sizeof(data), 42);
+    printf("ret = %d\n", ret);
+
+    return 0;
+}
+==================
+
+2. 타입을 정확하게 설계해야 한다.
+
+길이와 크기를 표현할 때는 unsigned 타입을 쓰는 것이 좋다.
+
+습관적으로 int로 선언하고 땡치는데
+
+면밀하게 쓰려면 size_t처럼 unsigned를 써야 한다.
+
+여전히 경계 체크를 해주어야 하지만
+
+음수의 경우를 생각하지 않아도 된다.
+
+====================
+#include <stdio.h>
+#include <limits.h>
+
+int insert(size_t index, int* list, int size, int value)
+{
+    int ret = -1;
+    if (size != 0 && index < size)
+    {
+        index = (index + 1) & size;
+
+        list[index] = value;
+        ret = index;
+    }
+    return ret;
+}
+
+int main(void)
+{
+    int data[32] = { 0, };
+    int ret;
+
+    // ret = insert(INT_MAX, data, sizeof(data), 42);
+    ret = insert(-42, data, sizeof(data), 42);
+    printf("ret = %d\n", ret);
+
+    return 0;
+}
+====================
+
+
+
+비트 연산자를 signed에 대해 사용하는 것은 미지정 동작이다.
+
+왜냐하면 컴파일러 구현마다 다른 동작의 가능성이 존재한다.
+
+비트 연산의 대상 타입은 unsigned를 사용해야 합니다.
+
+시프트 연산자 >> 는
+
+부호 있는 타입에서 쓰면 부호 비트로 채워지고,
+
+부호 없는 타입에서 쓰면 0으로 채워진다.
+
+시프트 연산을
+
+음수 또는 대상체의 비트수 이상으로 시프트하는 것은 "미정의 동작"이다.
+
+=======================
+#include <stdio.h>
+#include <limits.h>
+
+#define BITS(x) (sizeof(x) * CHAR_BIT)
+
+int main(void)
+{
+    int a = 0xABABABAB;
+    printf("%X\n", a >> 24); // 산술 시프트
+    printf("%X\n", (a >> 24) & 0xFF);
+
+    printf("%X\n", (unsigned int)a >> 24); // 논리 시프트
+
+    // int shift = 33;
+    // printf("%X\n", a << shift); // 미정의 동작
+
+    // shift = -1;
+    // printf("%X\n", a << shift); // 미정의 동작
+
+    size_t shift = 33;
+    if (shift <= BITS(a))
+    {
+        printf("%X\n", a << shift);
+    }
+
+    shift = -1;
+    if (shift <= BITS(a))
+    {
+        printf("%X\n", a << shift);
+    }
+
+    return 0;
+}
+=======================
+
+
+
+타입 11번째 내용
+
+부동 소수점
+
+float = 32비트
+
+double = 64비트
+
+long double = msvc = 64비트, gcc = 128비트인데
+
+하드웨어의 영향을 받아서 크기가 달라질 수 있다.
+
+그리고 상수 리터럴을 표현할 때, long, long long, long long double은
+
+끝에 L을 붙이자.
+
+
+
+정수를 0으로 나누거나 나머지 연산을 하는 것은 미정의 동작이다.
+
+단, 부동 소수점 타입은 0으로 나누는 것이 미정의 동작이 아니다.
+
+부동 소수점을 0으로 나누면 무한대 = INF.
+
+부동 소수점 타입을 0/0으로 나누면 = NaN. (Not a number)
+
+부동 소수점 연산을 수행하면서, inf 또는 nan이 발생하지 않도록 주의해야 한다.
+
+
+
+-------
+-------
+
+
+
+타입 12번째
+
+부동 소수점은 정확한 계산이 필요하다면, 소수점을 배제해서 사용할 수 있는지를 고려해야 한다.
+
+===================
+#include <stdio.h>
+
+float mean(float* arr, size_t len)
+{
+    float total = .0f;
+    for (size_t i = 0; i < len; i++)
+    {
+        total += arr[i];
+    }
+
+    return (len == 0) ? 0 : total / len;
+}
+
+int main(void)
+{
+    float arr[10];
+    for (size_t i = 0; i < 10; i++)
+    {
+        arr[i] = 10.1f;
+    }
+
+    float result = mean(arr, 10);
+    printf("result: %f\n", result);
+
+    return 0;
+}
+===================
+
+계산하면 10.099999 가 나오는데
+
+=================
+#include <stdio.h>
+
+float mean(float* arr, size_t len)
+{
+    float total = .0f;
+    for (size_t i = 0; i < len; i++)
+    {
+        total += arr[i];
+    }
+
+    return (len == 0) ? 0 : total / len;
+}
+
+int main(void)
+{
+    float arr[10];
+    for (size_t i = 0; i < 10; i++)
+    {
+        arr[i] = 10.1f * 1000; // 핵심
+    }
+
+    float result = mean(arr, 10);
+    printf("result: %f\n", result / 1000);
+
+    return 0;
+}
+==================
+
+요렇게 1000을 곱했다 나누는 방식으로 정확한 값을 구할 수 있다고 한다.
+
+부동 소수점 타입은 정수의 표현 범위보다 크기 때문에
+
+부동 소수점 타입을 정수 타입으로 대입할 때는 검사가 필요하다.
+
+==============
+#include <stdio.h>
+#include <limits.h>
+
+int main(void)
+{
+    int c = INT_MAX;
+
+    double result = (double)c + 1;
+    printf("result: %lf\n", result / 1000);
+
+    if (result > INT_MAX || result < INT_MIN)
+    {
+        printf("Oveflow!\n");
+    }
+    else
+    {
+        int n = result; // 버림
+        printf("%d\n", n);
+    }
+    
+
+    return 0;
+}
+==============
+
+
+
+C++은 MISRA가 너무 옛날거고
+
+다 너무 뻔한 내용들이라
+
+강의가 없는데,
+
+새거 나오면 잘 준비해보겠다고 하심.
+
+
+
