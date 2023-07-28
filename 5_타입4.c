@@ -10,6 +10,8 @@
 //    signed char: 부호 있는 8비트 정수 타입
 //  unsinged char: 부호 없는 8비트 정수 타입
 
+// * char 타입은 표준에서 타입의 크기가 1바이트로 정의되어 있습니다.
+
 int main(void)
 {
     signed char str1[] = "hello"; /* NO! */
