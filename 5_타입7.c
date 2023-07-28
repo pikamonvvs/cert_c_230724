@@ -52,5 +52,14 @@ int main(void)
         printf("result: %d\n", result);
     }
 
+    // 방법 3. GCC 내장 함수
+    int error;
+    error = __builtin_uadd_overflow(a, b, &result);
+    if (0 == error) {
+        printf("result: %d\n", result);
+    } else {
+        printf("Wrapping!\n");
+    }
+
     return 0;
 }
