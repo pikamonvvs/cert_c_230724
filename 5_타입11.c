@@ -36,7 +36,7 @@ int main(void)
 
 // - 부동 소수점 연산을 수행하면서, inf 또는 nan이 발생하지 않도록
 //   주의해야 합니다.
-
+#if 0
 int main(void)
 {
     // float a = 10;
@@ -65,6 +65,29 @@ int main(void)
     }
     if (isinf(y2)) {
         printf("y는 INFINITY 입니다.\n");
+    }
+
+    return 0;
+}
+#endif
+
+// 부동 소수점은 연산에 오차가 존재합니다.
+int main(void)
+{
+    double a = 0.1 * 7;
+    double b = 0.7;
+
+#if 0
+    if (a == b) {
+        printf("동등합니다...\n");
+    } else {
+        printf("%lf\n", a);
+        printf("%lf\n", b);
+    }
+#endif
+
+    if (fabs(a - b) < 0.000000001) {
+        printf("동등합니다...\n");
     }
 
     return 0;
