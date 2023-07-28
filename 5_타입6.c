@@ -186,7 +186,7 @@ int main(void)
 
 #include <stdint.h>
 #include <inttypes.h>
-// PRId8 =>  %hhd
+// PRId8  => %hhd
 // PRId16 => %hd
 // PRId32 => %d
 // PRId64 => %lld
