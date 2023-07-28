@@ -1,5 +1,6 @@
 // 5_타입3.c
 #include <stdio.h>
+#include <limits.h>
 
 // * 정수 변환 규칙
 // 1) 정수 타입 순위(Rank)
@@ -83,6 +84,7 @@ int main(void)
 // 5) 부호 있는 정수 타입의 피연산자가 부호 없는 타입의 모든 값을
 //    표현할 수 없는 경우, 부호 있는 정수 타입의 피연산자가 동일 타입의
 //    부호 없는 타입으로 두 피연산자 모두 변환됩니다.
+#if 0
 int main(void)
 {
     // 둘다 8바이트 입니다.
@@ -90,6 +92,41 @@ int main(void)
     unsigned long la = 10000L;
 
     printf("%llu\n", lla + la);
+
+    return 0;
+}
+#endif
+
+int main(void)
+{
+    int si = -1;
+    printf("%u\n", (unsigned int)si);
+
+    unsigned int ui = 1;
+
+    if (si < ui) {
+        printf("si가 작습니다.\n");
+    } else {
+        printf("si가 큽니다.\n");
+    }
+
+    // 해결 방법 - 잘못된 해결 방법
+#if 0
+    si = 1;
+    ui = INT_MAX + 1U;
+    if (si < (int)ui) { /* Overflow, 미정의 동작 */
+        printf("si가 작습니다.\n");
+    } else {
+        printf("si가 큽니다.\n");
+    }
+#endif
+
+    // 해결 방법: 음수 여부 판단해야 합니다.
+    if (si < 0 || si < ui) {
+        printf("si가 작습니다.\n");
+    } else {
+        printf("si가 큽니다.\n");
+    }
 
     return 0;
 }

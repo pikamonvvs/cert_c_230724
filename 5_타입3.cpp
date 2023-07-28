@@ -95,6 +95,7 @@ int main()
 }
 #endif
 
+#if 0
 // 5) 부호 있는 정수 타입의 피연산자가 부호 없는 타입의 모든 값을
 //    표현할 수 없는 경우, 부호 있는 정수 타입의 피연산자가 동일 타입의
 //    부호 없는 타입으로 두 피연산자 모두 변환됩니다.
@@ -104,4 +105,13 @@ int main()
     unsigned long la = 10000L;
 
     PRINT_TYPE(lla + la); // unsigned long long
+}
+#endif
+
+int main()
+{
+    int si = -1;
+    unsigned int ui = 1;
+
+    PRINT_TYPE(si + ui);
 }
