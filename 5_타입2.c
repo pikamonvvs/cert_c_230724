@@ -76,7 +76,7 @@ int main(void)
 }
 #endif
 
-#if 1
+#if 0
 int main(void)
 {
     uint8_t port = 0x5a;
