@@ -25,13 +25,24 @@ int main(void)
 
     printf("%X\n", (unsigned int)a >> 24); // 논리 쉬프트
 
-    int shift = 33;
-    if (shift > 0 && shift <= BITS(a)) { // 쉬프트 연산전 확인이 필요합니다.
-        printf("%X\n", a << shift); /* 미정의 동작 */
+#if 0
+    int shift;
+    shift = 33;
+    printf("%X\n", a << shift); /* 미정의 동작 */
+    shift = -1
+    printf("%X\n", a << shift); /* 미정의 동작 */
+#endif
+
+    size_t shift;
+    shift = 33;
+    if (shift <= BITS(a)) { // 쉬프트 연산전 확인이 필요합니다.
+        printf("%X\n", a << shift);
     }
 
     shift = -1;
-    printf("%X\n", a << shift); /* 미정의 동작 */
+    if (shift <= BITS(a)) {
+        printf("%X\n", a << shift);
+    }
 
     return 0;
 }
