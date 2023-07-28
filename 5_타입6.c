@@ -48,6 +48,7 @@ int main(void)
 }
 #endif
 
+#if 0
 int main(void)
 {
     int a;
@@ -92,6 +93,68 @@ int main(void)
 
     if (!is_overflow) {
         result = a * b;
+        printf("result: %d\n", result);
+    }
+
+    return 0;
+}
+#endif
+
+#if 0
+int main(void)
+{
+    int a;
+    int b;
+    int result;
+
+    a = INT_MIN;
+    b = -1;
+
+    if (b == 0 || (a == INT_MIN && b == -1)) {
+        printf("미정의동작\n");
+    } else {
+        result = a / b;
+        printf("result: %d\n", result);
+    }
+
+    return 0;
+}
+#endif
+
+// GCC / Clang
+// => 컴파일러 내장 함수를 이용해서 안전하게 연산을 수행하는 방법을 제공합니다.
+// => "Arithmetic Overflow Checking Built-in Function"
+int main(void)
+{
+    int a;
+    int b;
+    int result;
+
+    int error;
+    a = INT_MAX;
+    b = 1;
+    error = __builtin_add_overflow(a, b, &result);
+    if (error == 1) {
+        printf("Overflow!\n");
+    } else {
+        printf("result: %d\n", result);
+    }
+
+    a = INT_MIN;
+    b = 1;
+    error = __builtin_sub_overflow(a, b, &result);
+    if (error == 1) {
+        printf("Overflow!\n");
+    } else {
+        printf("result: %d\n", result);
+    }
+
+    a = INT_MAX;
+    b = 2;
+    error = __builtin_mul_overflow(a, b, &result);
+    if (error == 1) {
+        printf("Overflow!\n");
+    } else {
         printf("result: %d\n", result);
     }
 
