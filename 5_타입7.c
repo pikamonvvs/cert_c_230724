@@ -15,12 +15,42 @@
 // 4. 정수 래핑은 논리적 오류의 원인이 될 수 있으므로,
 //    주의해야 합니다.
 
+#if 0
 int main(void)
 {
     unsigned int a = UINT_MAX;
     int b = 1;
 
     printf("%u\n", a + b); /* 정수 래핑, 미정의 동작이 아닙니다. */
+
+    return 0;
+}
+#endif
+
+int main(void)
+{
+    unsigned int a;
+    unsigned int b;
+    unsigned int result;
+
+    a = UINT_MAX;
+    b = 1;
+
+    result = a + b; /* OK! */
+    // 방법 1. 연산의 결과가 정수 래핑이 발생했는지 확인합니다.
+    if (result < a) {
+        printf("Wrapping!\n");
+    } else {
+        printf("result: %d\n", result);
+    }
+
+    // 방법 2. 연산의 결과가 래핑이 발생할 가능성이 있는지 미리 확인합니다.
+    if (a > UINT_MAX - b) {
+        printf("Wrapping!\n");
+    } else {
+        result = a + b;
+        printf("result: %d\n", result);
+    }
 
     return 0;
 }
