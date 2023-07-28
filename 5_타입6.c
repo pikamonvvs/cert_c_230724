@@ -23,6 +23,7 @@ int main(void)
 }
 #endif
 
+#if 0
 int main(void)
 {
     int a;
@@ -40,6 +41,57 @@ int main(void)
         printf("Overflow\n"); // 음수 일때
     } else {
         result = a + b;
+        printf("result: %d\n", result);
+    }
+
+    return 0;
+}
+#endif
+
+int main(void)
+{
+    int a;
+    int b;
+    int result;
+
+    b = INT_MAX;
+    a = 2;
+
+    // result = a * b; /* Overflow! */
+    // printf("result: %d\n", result);
+
+    int is_overflow = 0;
+    if (a > 0) { // a가 양수 일때
+        if (b > 0) { // b가 양수 일때
+            if (b != 0 && a > (INT_MAX / b)) {
+                printf("Overflow!\n");
+                is_overflow = 1;
+            }
+
+        } else { // b가 음수 일때
+            if (a != 0 && b < (INT_MIN / a)) {
+                printf("Overflow!\n");
+                is_overflow = 1;
+            }
+        }
+
+    } else { // a가 음수 일때
+        if (b > 0) {
+            if (b != 0 && a < (INT_MIN / b)) {
+                printf("Overflow!\n");
+                is_overflow = 1;
+            }
+
+        } else {
+            if (a != 0 && b < (INT_MAX / a)) {
+                printf("Overflow!\n");
+                is_overflow = 1;
+            }
+        }
+    }
+
+    if (!is_overflow) {
+        result = a * b;
         printf("result: %d\n", result);
     }
 
