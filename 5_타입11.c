@@ -1,6 +1,7 @@
 // 5_타입11.c
 #include <stdio.h>
 #include <math.h>
+#include <limits.h>
 
 // 부동 소수점
 // 1) float: 32bit
@@ -72,6 +73,7 @@ int main(void)
 #endif
 
 // 부동 소수점은 연산에 오차가 존재합니다.
+#if 0
 int main(void)
 {
     double a = 0.1 * 7;
@@ -88,6 +90,27 @@ int main(void)
 
     if (fabs(a - b) < 0.000000001) {
         printf("동등합니다...\n");
+    }
+
+    return 0;
+}
+#endif
+
+int main(void)
+{
+    int c = INT_MAX;
+
+    double result = (double)c + 1;
+    printf("%lf\n", result);
+
+    // 부동 소수점 타입은 정수의 표현범위보다 크기 때문에,
+    // 부동 소수점 타입을 정수 타입으로 대입할 때,
+    // 검사가 필요합니다.
+    if (result > INT_MAX || result < INT_MIN) {
+        printf("Overflow!\n");
+    } else {
+        int n = result; // 버림
+        printf("%d\n", n);
     }
 
     return 0;
