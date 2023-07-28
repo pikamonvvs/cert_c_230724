@@ -108,10 +108,36 @@ int main()
 }
 #endif
 
+#if 0
 int main()
 {
     int si = -1;
     unsigned int ui = 1;
 
     PRINT_TYPE(si + ui);
+}
+#endif
+
+struct s {
+    signed int a : 8;
+    signed int b : 8;
+
+    unsigned int c : 8;
+    unsigned int d : 8;
+
+    unsigned int e : 31;
+    unsigned int f : 31;
+
+    unsigned int g : 32;
+    unsigned int h : 32;
+};
+
+int main(void)
+{
+    struct s data = { .a = 10, .b = 20, .c = 30, .d = 40 };
+
+    PRINT_TYPE(data.a + data.b); // int
+    PRINT_TYPE(data.c + data.d); // int
+    PRINT_TYPE(data.e + data.f); // int
+    PRINT_TYPE(data.g + data.h); // unsigned int
 }
