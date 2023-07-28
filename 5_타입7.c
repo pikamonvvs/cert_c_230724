@@ -94,3 +94,5 @@ int main(void)
 
     return 0;
 }
+
+// https://gcc.gnu.org/onlinedocs/gcc/Integer-Overflow-Builtins.html
