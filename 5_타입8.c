@@ -149,6 +149,7 @@ int main(void)
 int main(void)
 {
     char buf[32];
+    // FILE* fp = fopen("a.txt", "w");
 
     errno = 0;
     fgets(buf, sizeof(buf), stdin);
@@ -170,6 +171,7 @@ int main(void)
             printf("%ld\n", data);
         }
     } else {
+        perror("fgets()");
         printf("입력이 제대로 처리되지 않았습니다...\n");
     }
 
