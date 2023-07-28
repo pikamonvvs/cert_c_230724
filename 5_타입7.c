@@ -54,6 +54,8 @@ int main(void)
 
     // 방법 3. GCC 내장 함수
     int error;
+
+    // 주의사항: 오버플로우가 아닙니다.
     error = __builtin_uadd_overflow(a, b, &result);
     if (0 == error) {
         printf("result: %d\n", result);
